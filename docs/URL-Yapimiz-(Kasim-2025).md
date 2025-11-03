@@ -142,3 +142,50 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/|favicon.ico|robots.txt|sitemap*.xml|images/|static/).*)"],
 };
+
+<!-- LEGAL_STATIC_START -->
+
+## Hukuki & Statik Sayfalar (TR)
+
+> Varsayılan dil **TR** (prefix yok). Redirect **yok** (eski sürüm indexlenmedi).
+
+> **Indexleme:** tüm statik/hukuki sayfalar `index,follow`; **/hesap/** ve auth rotaları `noindex`.
+
+> **Canonical:** self. **Sitemap:** statik/hukuki sayfaların tamamı dahil; **/hesap/** ve auth hariç.
+
+**Kanonik TR rotaları**
+
+- `/` — Anasayfa
+
+- `/hakkimizda`
+
+- `/iletisim`
+
+- `/yardim`  *(SSS / Yardım Merkezi)*
+
+- `/gizlilik-politikasi`
+
+- `/kvkk-aydinlatma`
+
+- `/kullanim-sartlari`
+
+- `/cerez-politikasi`
+
+- `/mesafeli-satis-sozlesmesi`
+
+- `/iade-iptal-kosullari`
+
+- `/odeme-ve-rezervasyon-kosullari`  *(varsa)*
+
+**Auth & Panel**
+
+- `/giris` — *(indexlenebilir; canonical self)*
+
+- `/kayit` — *(indexlenebilir; canonical self)*
+
+- `/hesap/**` — *(özel alan, **noindex**)*
+
+> Not: WooCommerce kalıntıları (`/shop/`, `/cart/`, `/my-account/`) **kullanılmayacak**.
+
+<!-- LEGAL_STATIC_END -->
+
