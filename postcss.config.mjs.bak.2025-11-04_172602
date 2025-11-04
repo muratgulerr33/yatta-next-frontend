@@ -1,0 +1,13 @@
+// ESM formatı: Next.js 15 + PostCSS 8 uyumlu
+
+export default {
+  plugins: {
+    // import zinciri / @import desteği (varsa)
+    'postcss-import': {},
+    // Tailwind CSS v4 için PostCSS plugin
+    '@tailwindcss/postcss': {},
+    // Otomatik vendor prefix
+    autoprefixer: {},
+  },
+};
+

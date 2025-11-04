@@ -1,11 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* Basit genel stil */
 html, body, #root {
   height: 100%;
 }
 body {
-  @apply bg-slate-50 text-slate-800;
+  background-color: rgb(248 250 252);
+  color: rgb(30 41 59);
 }

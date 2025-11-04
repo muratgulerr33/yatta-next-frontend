@@ -10,12 +10,8 @@ if [ -d ".next/cache" ]; then
     echo "✅ Build cache korunuyor (daha hızlı build)"
 fi
 
-# Kalıcı çözüm için deterministik kurulum
-npm ci
+npm install
 npm run build
-
-# Statik ve public dosyaları fix scriptiyle kopyala
-echo "=== STATIC VE PUBLIC FIX BAŞLADI ==="
 bash ./fix-public-folder-after-build.sh
 
 # Standalone build'de static ve public dosyalarını kopyala (Next.js standalone build bunları otomatik kopyalamıyor)

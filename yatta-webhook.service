@@ -1,0 +1,17 @@
+[Unit]
+Description=Yatta GitHub Webhook Server (Flask)
+After=network.target
+
+[Service]
+Type=simple
+User=yatta
+Group=www-data
+WorkingDirectory=/home/yatta/apps/frontend
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /home/yatta/apps/frontend/webhook_server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

@@ -8,8 +8,7 @@
     "build": "next build",
     "lint": "next lint",
     "preview": "vite preview",
-    "start": "node .next/standalone/server.js",
-    "analyze:colors": "node scripts/analyze/colors/scanColors.mjs"
+    "start": "node .next/standalone/server.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",

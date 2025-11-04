@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+/* Basit genel stil */
+html, body {
+  height: 100%;
+}
+body {
+  background-color: rgb(248 250 252);
+  color: rgb(30 41 59);
+  /* Font next/font ile otomatik eklenir (Inter) */
+}
+
+/* Neon glow efekti */
+.neon-glow {
+  text-shadow:
+    0 0 10px #ff00ff,
+    0 0 20px #ff00ff,
+    0 0 40px #ff00ff,
+    0 0 80px #ff00ff;
+}
+
+/* === YATTA - Yakındayız Sayfası === */
+.yatta-contact {
+  font-family: "Inter", sans-serif;
+  text-align: center;
+  color: #222;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.yatta-contact .hero {
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.yatta-contact .hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1565c0;
+  margin-bottom: 1rem;
+}
+
+.yatta-contact .hero p {
+  font-size: 1.125rem;
+  color: #555;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.yatta-contact .contact-info {
+  margin: 3rem 0;
+}
+
+.yatta-contact .info-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.yatta-contact .info-card h2 {
+  font-size: 1.75rem;
+  color: #1565c0;
+  margin-bottom: 1.5rem;
+}
+
+.yatta-contact .info-card p {
+  font-size: 1rem;
+  margin: 1rem 0;
+  line-height: 1.6;
+}
+
+.yatta-contact .info-card a {
+  color: #1976d2;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.yatta-contact .info-card a:hover {
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+.yatta-contact .social-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 3rem 0;
+}
+
+.yatta-contact .social {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.yatta-contact .social:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.yatta-contact .social.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.yatta-contact .social.facebook {
+  background: #1877f2;
+}
+
+.yatta-contact .social.tiktok {
+  background: #000000;
+}
+
+.yatta-contact .social.youtube {
+  background: #ff0000;
+}
+
+.yatta-contact .quick-links {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  z-index: 100;
+}
+
+.yatta-contact .quick-links a {
+  padding: 0.75rem 1.5rem;
+  background: #1976d2;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.yatta-contact .quick-links a:hover {
+  background: #1565c0;
+}
+
+@media (max-width: 768px) {
+  .yatta-contact .hero h1 {
+    font-size: 2rem;
+  }
+
+  .yatta-contact .info-card {
+    padding: 1.5rem;
+  }
+
+  .yatta-contact .social-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .yatta-contact .social {
+    width: 200px;
+  }
+
+  .yatta-contact .quick-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .yatta-contact .quick-links a {
+    width: calc(100% - 2rem);
+    margin: 0 1rem;
+  }
+}
+
+/* Nunito font profesyonel görünüm ayarları */
+:root {
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+}
+
+button, a {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+

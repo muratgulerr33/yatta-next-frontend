@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /health/
+Disallow: /status/
+
+# Host
+Host: https://yatta.com.tr
+
+# Sitemaps
+Sitemap: https://yatta.com.tr/sitemap.xml
