@@ -1,4 +1,4 @@
-// CommonJS format - Node 22 + Vite 7 + Tailwind 4 uyumlu
+// CommonJS format - Next.js + Tailwind v4 uyumlu
 
 module.exports = {
   plugins: {
@@ -7,4 +7,3 @@ module.exports = {
     'autoprefixer': {},
   },
 };
-

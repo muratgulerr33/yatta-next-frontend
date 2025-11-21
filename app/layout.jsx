@@ -1,23 +1,13 @@
-import localFont from 'next/font/local'
+/* eslint-disable react-refresh/only-export-components */
 import './globals.css'
 import { AppStateProvider } from '@/contexts/AppStateContext'
+import { SiteHeader } from '@/components/layout/SiteHeader'
+import { SiteFooter } from '@/components/layout/SiteFooter'
 
 // Font Awesome CSS - tüm ikonlar için
 import '@fortawesome/fontawesome-free/css/all.css'
 
 // React Icons otomatik olarak çalışır, import gerekmez (kullanıldığı yerde import edilir)
-
-// Nunito font ailesi tanımı (Regular / SemiBold / Bold)
-// next/font ile fontlar self-hosted olur, performans artar
-const nunito = localFont({
-  src: [
-    { path: '../public/fonts/Nunito-Regular.woff2', weight: '400', style: 'normal' },
-    { path: '../public/fonts/Nunito-SemiBold.woff2', weight: '600', style: 'normal' },
-    { path: '../public/fonts/Nunito-Bold.woff2', weight: '700', style: 'normal' },
-  ],
-  variable: '--font-nunito',
-  display: 'swap', // CLS önleme
-})
 
 const BASE_URL = 'https://yatta.com.tr'
 
@@ -85,10 +75,14 @@ export const revalidate = 3600 // 1 saat ISR (Incremental Static Regeneration)
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="tr">
-      <body className={`${nunito.className} antialiased bg-light text-primary`}>
+    <html lang="tr" data-theme="light">
+      <body className="font-sans antialiased bg-light text-primary min-h-screen flex flex-col">
         <AppStateProvider>
-          {children}
+          <SiteHeader />
+          <main className="flex-1 px-[11px]">
+            {children}
+          </main>
+          <SiteFooter />
         </AppStateProvider>
       </body>
     </html>

@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:local": "NEXT_CONFIG_OUTPUT=standard next build",
     "lint": "next lint",
     "preview": "vite preview",
-    "start": "node .next/standalone/server.js",
+    "start": "next start",
     "analyze:colors": "node scripts/analyze/colors/scanColors.mjs"
   },
   "dependencies": {

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 // Custom 404 Not Found page
 export const metadata = {
   title: '404 - Sayfa Bulunamadı | Yatta',

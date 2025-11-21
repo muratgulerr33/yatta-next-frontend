@@ -2,7 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   // Use standalone output to produce .next/standalone for production
-  output: 'standalone',
+  // Local build için NEXT_CONFIG_OUTPUT=standard ile devre dışı bırakılabilir
+  ...(process.env.NEXT_CONFIG_OUTPUT !== 'standard' && { output: 'standalone' }),
   // Trailing slash'i middleware'de handle edeceğiz, Next.js'in kendi redirect'ini devre dışı bırak
   trailingSlash: false,
   
