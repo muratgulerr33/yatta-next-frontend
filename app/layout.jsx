@@ -1,6 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
+import { Inter } from "next/font/google"
 import './globals.css'
 import { AppStateProvider } from '@/contexts/AppStateContext'
+
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-inter",
+  display: "swap",
+})
+
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 
@@ -75,7 +83,7 @@ export const revalidate = 3600 // 1 saat ISR (Incremental Static Regeneration)
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="tr" data-theme="light">
+    <html lang="tr" data-theme="light" className={inter.variable}>
       <body className="font-sans antialiased bg-light text-primary min-h-screen flex flex-col">
         <AppStateProvider>
           <SiteHeader />

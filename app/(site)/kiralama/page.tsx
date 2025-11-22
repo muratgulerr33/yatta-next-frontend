@@ -8,7 +8,7 @@ export default function Page() {
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold">
           Kiralama
         </h1>
-        <p className="text-sm md:text-base leading-relaxed md:leading-loose text-muted-foreground">
+        <p className="text-muted-foreground">
           Yatta.com.tr&apos;de farklı konaklama ve deneyim seçeneklerini tek bir
           çatı altında topluyoruz. Aşağıda, sistemimizin v1 sürümünde
           planladığımız kiralama türleri için örnek açıklamalar ve bilgi
@@ -21,7 +21,7 @@ export default function Page() {
       {/* Yat kiralama */}
       <section className="space-y-3">
         <h2 className="text-lg md:text-xl font-semibold">Yat kiralama</h2>
-        <p className="text-sm md:text-base leading-relaxed md:leading-loose">
+        <p>
           Yat kiralama, denizde özgürce vakit geçirmek, koy koy gezmek ve
           misafirlerine özel bir deneyim sunmak isteyenler için en premium
           kiralama modelidir. Bu mock metinde; tekne tipi, kapasite, kalkış
@@ -33,7 +33,7 @@ export default function Page() {
           Yat kiralama akışında, sözleşme adımları, ödeme seçenekleri ve iptal
           koşulları gibi detaylar da ayrı bölümler olarak açıklanabilir.
         </p>
-        <ul className="list-disc list-inside text-sm md:text-base leading-relaxed md:leading-loose">
+        <ul className="list-disc list-inside">
           <li>Günlük ve haftalık yat kiralama senaryoları.</li>
           <li>Koy ve rota önerileri için örnek içerik alanı.</li>
           <li>Mürettebatlı / mürettebatsız seçenekleri için bilgi blokları.</li>
@@ -44,7 +44,7 @@ export default function Page() {
       {/* Karavan kiralama */}
       <section className="space-y-3">
         <h2 className="text-lg md:text-xl font-semibold">Karavan kiralama</h2>
-        <p className="text-sm md:text-base leading-relaxed md:leading-loose">
+        <p>
           Karavan kiralama, özgür rotalar çizmek ve doğayla iç içe esnek bir
           tatil planlamak isteyen kullanıcılar için tasarlanmış bir kiralama
           modelidir. Bu mock metin; karavan tipleri, kişi kapasitesi, iç
@@ -57,7 +57,7 @@ export default function Page() {
           öncesinde ihtiyaç duyduğu tüm bilgileri tek ekranda toplu olarak
           inceleyebilir.
         </p>
-        <ul className="list-disc list-inside text-sm md:text-base leading-relaxed md:leading-loose">
+        <ul className="list-disc list-inside">
           <li>Farklı karavan tipleri (campervan, çekme karavan vb.).</li>
           <li>Kamp alanı ve rota önerileri için mock alan.</li>
           <li>Depozito, kilometre sınırı ve sigorta bilgisi.</li>
@@ -68,7 +68,7 @@ export default function Page() {
       {/* Bungalov kiralama */}
       <section className="space-y-3">
         <h2 className="text-lg md:text-xl font-semibold">Bungalov kiralama</h2>
-        <p className="text-sm md:text-base leading-relaxed md:leading-loose">
+        <p>
           Bungalov kiralama, doğa oteli konforunu daha butik ve sıcak bir
           ortamda sunan konaklama modelini temsil eder. Bu mock içerikte; oda
           özellikleri, manzara tipleri, kahvaltı ve yemek seçenekleri, şömine ve
@@ -81,7 +81,7 @@ export default function Page() {
           aileler veya kalabalık gruplar için farklı konseptler mock olarak
           temsil edilebilir.
         </p>
-        <ul className="list-disc list-inside text-sm md:text-base leading-relaxed md:leading-loose">
+        <ul className="list-disc list-inside">
           <li>Oda tipleri ve kişi kapasitesi için bilgi alanları.</li>
           <li>Manzara, konum ve konsept filtreleri.</li>
           <li>Şömine, jakuzi, bahçe kullanımı gibi ek özellikler.</li>
@@ -92,7 +92,7 @@ export default function Page() {
       {/* Villa kiralama */}
       <section className="space-y-3">
         <h2 className="text-lg md:text-xl font-semibold">Villa kiralama</h2>
-        <p className="text-sm md:text-base leading-relaxed md:leading-loose">
+        <p>
           Villa kiralama, özellikle kalabalık aileler ve arkadaş grupları için
           geniş yaşam alanı, özel havuz ve yüksek mahremiyet sunan bir kiralama
           seçeneğidir. Bu mock metin; oda sayısı, banyo sayısı, havuz ölçüleri,
@@ -105,7 +105,7 @@ export default function Page() {
           olarak kullanılsa da, ilerleyen sürümlerde gerçek veritabanı
           içerikleriyle beslenmeye hazır bir iskelet niteliği taşır.
         </p>
-        <ul className="list-disc list-inside text-sm md:text-base leading-relaxed md:leading-loose">
+        <ul className="list-disc list-inside">
           <li>Oda ve banyo sayısı için yapılandırılabilir alanlar.</li>
           <li>Özel havuz, bahçe ve otopark bilgisi.</li>
           <li>Bölge ve fiyat filtresiyle çalışan listeleme senaryosu.</li>

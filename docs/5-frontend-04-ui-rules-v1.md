@@ -8,31 +8,35 @@ Amaç: **mobil öncelikli, hızlı, okunaklı ve tutarlı** bir arayüz standart
 
 ## 1. Font Sistemi
 
-### 1.1. Ürün UI font ailesi (system font stack)
+### 1.1. Ürün UI font ailesi (Inter - Variable)
 
-Tüm arayüz (metinler, butonlar, formlar, tablo vs.) için **tek font ailesi** kullanılır:
+V1 arayüzünde ana font olarak **Inter** (Variable Font) kullanılır.
 
 ```css
 :root {
-  /* Tüm UI için ana sans-serif font ailesi */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont,
-               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Inter font değişkeni Next.js tarafından otomatik atanır */
+  --font-sans: var(--font-inter);
+}
+
+html {
+  /* Modern karakter seti özellikleri (App-like hissi) */
+  font-feature-settings: "cv11", "cv05";
 }
 
 body {
   font-family: var(--font-sans);
 }
-````
+```
 
-> Not: Bu fontlar cihazın kendi native UI fontlarıdır
-> (iOS/macOS: SF Pro, Windows: Segoe UI, Android: Roboto).
+**Özellikler:**
+*   **Variable Font:** Tek dosya ile tüm ağırlıklar (100-900) desteklenir.
+*   **Modern Karakter Seti:** `cv11` (Single-story a) ve `cv05` (Disambiguation l) özellikleri `html` seviyesinde aktiftir.
+*   **Fallback:** Inter yüklenemezse system fontlarına (SF Pro, Roboto vb.) düşer.
 
 **Neden?**
-
-* Harici font dosyası yok → **daha hızlı yüklenme**.
-* Kullanıcı zaten bu fontlara alışık → **güven ve okunabilirlik** yüksek.
-* Hem e-ticaret hem booking için gereken “kurumsal ama sıcak” hissi verir.
-* V1 bakımı kolay; V2’de istersek kendi brand fontumuzu ekleriz.
+*   **Tutarlılık:** Android, iOS ve Windows cihazlarda birebir aynı görünüm.
+*   **Okunabilirlik:** Booking ve e-ticaret için optimize edilmiş, sayısal verilerde üstün (tabular figures) performans.
+*   **Modern Algı:** `cv11` gibi özelliklerle "App-like" modern ve temiz bir duruş.
 
 ---
 

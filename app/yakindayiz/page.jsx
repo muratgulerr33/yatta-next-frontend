@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function YakindayizPage() {
   return (
-    <section className="w-full min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#004aad] to-[#1316d4] text-white">
+    <section className="w-full min-h-screen flex flex-col items-center justify-center bg-white text-gray-900">
       <div className="w-full text-center space-y-6">
         {/* Logo */}
         <div className="mb-6">
@@ -21,20 +21,20 @@ export default function YakindayizPage() {
         <p className="text-lg md:text-2xl mb-8 opacity-90">
           Tatil, deniz ve organizasyon dünyasında çok yakında online!  
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 mb-10 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 mb-10 justify-center w-full max-w-md mx-auto px-4">
           <a 
             href="tel:+905304872333" 
-            className="bg-white text-[#004aad] px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition"
+            className="flex items-center justify-center w-full py-3.5 bg-[#004aad] text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-900/20 hover:bg-[#003380] hover:shadow-blue-900/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
           >
-            📞 Ara
+            Ara
           </a>
           <a 
             href="https://wa.me/905304872333" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="bg-green-500 px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition"
+            className="flex items-center justify-center w-full py-3.5 bg-[#25D366] text-white rounded-xl font-bold text-lg shadow-lg shadow-green-900/20 hover:bg-[#1DA851] hover:shadow-green-900/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
           >
-            💬 WhatsApp
+            WhatsApp
           </a>
         </div>
         
@@ -98,7 +98,7 @@ export default function YakindayizPage() {
           <h2 className="text-lg font-semibold mt-8">
             1. Component
           </h2>
-          <p className="text-sm leading-relaxed">
+          <p>
             Component, React ve Next.js dünyasında arayüzün en küçük tekrar
             kullanılabilir parçasıdır. Bir buton, kart, form alanı veya header
             gibi gördüğümüz her parça aslında birer component olabilir. Her
@@ -113,7 +113,7 @@ export default function YakindayizPage() {
           <h2 className="text-lg font-semibold mt-8">
             2. Layout
           </h2>
-          <p className="text-sm leading-relaxed">
+          <p>
             Layout, bir sayfanın iskeletini ve tekrar eden büyük yapısını
             tanımlayan şablondur. Örneğin her sayfada aynı kalan header, footer
             ve ana içerik alanını (main) tek tek her sayfaya yazmak yerine, bir
@@ -127,7 +127,7 @@ export default function YakindayizPage() {
           <h2 className="text-lg font-semibold mt-8">
             3. page.tsx
           </h2>
-          <p className="text-sm leading-relaxed">
+          <p>
             page.tsx dosyası, Next.js App Router'da bir URL yolunu (route) temsil
             eden temel sayfa bileşenidir. Örneğin app/kiralama/page.tsx dosyası
             /kiralama adresine karşılık gelir. Bu dosyanın içindeki default
@@ -141,7 +141,7 @@ export default function YakindayizPage() {
           <h2 className="text-lg font-semibold mt-8">
             4. Tailwind
           </h2>
-          <p className="text-sm leading-relaxed">
+          <p>
             Tailwind, utility-first yaklaşımıyla çalışan bir CSS framework'üdür.
             Uzun CSS dosyaları yazmak yerine, HTML veya JSX içinde sınıf isimleri
             (className) kullanarak görünümü oluştururuz. Örneğin px-6, py-4,
@@ -155,6 +155,47 @@ export default function YakindayizPage() {
         </div>
         
         <p className="mt-12 text-sm opacity-70">© 2025 Yatta.com.tr — Eğriçam Marina, Mersin</p>
+
+        {/* Design System Buttons Demo */}
+        <div className="mt-16 p-8 border-t border-gray-200 bg-gray-50 w-full max-w-4xl mx-auto rounded-xl">
+          <h3 className="text-xl font-bold mb-6 text-gray-800">Buton Tasarım Sistemi</h3>
+          <div className="flex flex-wrap justify-center gap-4 items-center">
+            
+            {/* Primary Button */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs text-gray-500 font-mono">.btn-primary</span>
+              <button className="btn-primary">
+                Primary Buton
+              </button>
+            </div>
+
+            {/* Accent Button */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs text-gray-500 font-mono">.btn-accent</span>
+              <button className="btn-accent">
+                Accent Buton
+              </button>
+            </div>
+
+            {/* Outline / Secondary Style (Tailwind utility ile) */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs text-gray-500 font-mono">Border / Secondary</span>
+              <button className="border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:border-[#004aad] hover:text-[#004aad] transition-colors">
+                Secondary Buton
+              </button>
+            </div>
+
+            {/* Ghost Button */}
+            <div className="flex flex-col gap-2">
+              <span className="text-xs text-gray-500 font-mono">Ghost / Text</span>
+              <button className="text-gray-600 hover:text-[#004aad] px-6 py-3 font-semibold transition-colors">
+                Ghost Buton
+              </button>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </section>
   );
