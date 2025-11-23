@@ -1,0 +1,23 @@
+[
+  {
+    "id": "yacht-001",
+    "slug": "luxury-motor-yacht",
+    "name": "Lüks Motor Yat - Mersin",
+    "category": "kiralama",
+    "price": 5000,
+    "currency": "TRY",
+    "capacity": 12,
+    "description": "15 metre lüks motor yat, geniş güverte ve konforlu kamaralar."
+  },
+  {
+    "id": "tour-001",
+    "slug": "sunset-tour",
+    "name": "Gün Batımı Turu",
+    "category": "tur",
+    "price": 3000,
+    "currency": "TRY",
+    "capacity": 10,
+    "description": "Mersin açıklarında romantik gün batımı turu. İçecek ikramı dahildir."
+  }
+]
+

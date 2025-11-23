@@ -1,0 +1,38 @@
+[
+  {
+    "id": "faq-greeting",
+    "category": "general",
+    "question": "Merhaba",
+    "answer": "Merhaba! Ben Helin, Yatta'nın dijital satış asistanıyım. Size yat kiralama, turlar veya organizasyonlar konusunda nasıl yardımcı olabilirim?",
+    "keywords": ["merhaba", "selam", "slm", "günaydın", "iyi akşamlar", "hey"]
+  },
+  {
+    "id": "faq-proposal",
+    "category": "organizasyon",
+    "question": "Evlilik teklifi organizasyonu yapıyor musunuz?",
+    "answer": "Evet, evlilik teklifi organizasyonlarımız mevcuttur! Size özel süslemeler, yemek, müzik ve lazer gösterisi gibi seçeneklerle unutulmaz bir an hazırlayabiliriz. Tarih ve detaylar için size özel bir paket oluşturabiliriz.",
+    "keywords": ["evlilik teklifi", "teklif", "evlenme", "yüzük", "sürpriz"]
+  },
+  {
+    "id": "faq-yacht-tour",
+    "category": "tur",
+    "question": "Yat turları kaç saat sürüyor?",
+    "answer": "Yat turlarımız genellikle saatlik, yarım günlük (4 saat) veya tam günlük (8 saat) olarak düzenlenmektedir. Ayrıca gün batımı (sunset) turlarımız da mevcuttur. İsteğinize göre süreyi ayarlayabiliriz.",
+    "keywords": ["tur", "gezi", "saat", "süre", "yarım gün", "tam gün", "sunset"]
+  },
+  {
+    "id": "faq-reservation",
+    "category": "rezervasyon",
+    "question": "Nasıl rezervasyon yapabilirim?",
+    "answer": "Rezervasyon yapmak için beğendiğiniz tekneyi veya turu seçip tarih belirlemeniz yeterlidir. Şu an web sitemiz üzerinden veya doğrudan bizimle iletişime geçerek rezervasyonunuzu oluşturabilirsiniz.",
+    "keywords": ["rezervasyon", "yer ayırt", "kirala", "nasıl"]
+  },
+  {
+    "id": "faq-price-general",
+    "category": "fiyat",
+    "question": "Fiyatlarınız nedir?",
+    "answer": "Fiyatlarımız seçtiğiniz tekneye, kişi sayısına, tura ve tarihe göre değişiklik göstermektedir. Hangi hizmetle ilgilendiğinizi belirtirseniz size daha net bir fiyat aralığı verebilirim.",
+    "keywords": ["fiyat", "ücret", "kaç para", "ne kadar", "pahalı"]
+  }
+]
+

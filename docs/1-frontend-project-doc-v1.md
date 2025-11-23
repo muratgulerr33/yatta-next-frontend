@@ -249,7 +249,7 @@ Kategoriler (public, SEO)
 ├─ kiralama/*
 ├─ turlar/*
 ├─ organizasyon/*
-└─ satilik/*             # satılık yat/tekne ilanları (seller grubundaki üyeler yönetir)
+└─ satilik-tekneler/*   # satılık yat/tekne ilanları (seller grubundaki üyeler yönetir)
 ```
 
 > **Not:** Tek panel yapısı; `/seller/*` ve `/partner/*` ayrı panelleri **yok**. Sekmeler rol/grup şartıyla görünür.

@@ -46,20 +46,38 @@ const nextConfig = {
   // }),
   
   // Image optimization
-  images: {
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60 * 60 * 24 * 7, // 7 days
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // CDN için remote patterns (ihtiyaç duyulduğunda eklenebilir)
-    // remotePatterns: [
-    //   {
-    //     protocol: 'https',
-    //     hostname: 'cdn.yatta.com.tr',
-    //     pathname: '/images/**',
-    //   },
-    // ],
-  },
+  // Media base URL'den türetilen config
+  // Tek gerçek media origin: NEXT_PUBLIC_MEDIA_BASE_URL (default: https://api.yatta.com.tr)
+  // Local dev: http://127.0.0.1:8000, Production: https://api.yatta.com.tr
+  ...(function() {
+    const mediaBase = process.env.NEXT_PUBLIC_MEDIA_BASE_URL || 'https://api.yatta.com.tr';
+    const mediaUrl = new URL(mediaBase);
+    
+    // Local IP kontrolü: sadece 127.0.0.1 veya localhost için true
+    const isLocalIp =
+      mediaUrl.hostname === '127.0.0.1' ||
+      mediaUrl.hostname === 'localhost';
+    
+    return {
+      images: {
+        formats: ['image/avif', 'image/webp'],
+        minimumCacheTTL: 60 * 60 * 24 * 7, // 7 days
+        deviceSizes: [640, 750, 828, 1080, 1200, 1500, 1920, 2048, 3840],
+        imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 500],
+        // Local IP'ye izin ver: sadece localhost/127.0.0.1 için true, prod'da false (güvenlik)
+        dangerouslyAllowLocalIP: isLocalIp,
+        // Remote patterns: tek kaynak - mediaBase + /media/**
+        remotePatterns: [
+          {
+            protocol: mediaUrl.protocol.replace(':', ''), // 'http' veya 'https'
+            hostname: mediaUrl.hostname,                  // '127.0.0.1' veya 'api.yatta.com.tr'
+            port: mediaUrl.port || '',                    // localde '8000', prod'da ''
+            pathname: '/media/**',
+          },
+        ],
+      },
+    };
+  })(),
   
   // Redirects - Next.js'in 308 redirect'lerini 301'e çevirmek için
   async redirects() {

@@ -10,7 +10,7 @@ const mainNavLinks = [
   { href: '/turlar', label: 'Turlar' },
   { href: '/konaklama', label: 'Konaklama' },
   { href: '/organizasyon', label: 'Organizasyon' },
-  { href: '/satilik', label: 'Satılık' },
+  { href: '/satilik-tekneler', label: 'Satılık Tekneler' },
 ]
 
 const iconTriggerClass =
@@ -215,7 +215,7 @@ export function SiteHeader() {
           }`}
         >
           {/* Header of Drawer */}
-          <div className="flex items-center justify-between pl-6 pr-4 h-[64px] border-b border-slate-100">
+          <div className="flex items-center justify-between pl-[calc(var(--spacing)*4.5)] pr-4 h-[64px] border-b border-slate-100">
             <Link href="/" onClick={closeMobileMenu} className="relative left-1">
               <Image
                 src="/yatta-header-primary.svg"

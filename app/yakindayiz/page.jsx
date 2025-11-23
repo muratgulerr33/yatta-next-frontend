@@ -1,10 +1,12 @@
 // app/yakindayiz/page.jsx
 import Image from 'next/image'
+import { MOCK_CATEGORIES } from '@/data/mockCategories';
+import { CategoryShowcase } from '@/components/ui/CategoryShowcase';
 
 export default function YakindayizPage() {
   return (
-    <section className="w-full min-h-screen flex flex-col items-center justify-center bg-white text-gray-900">
-      <div className="w-full text-center space-y-6">
+    <section className="w-full min-h-screen flex flex-col items-center justify-center bg-white text-gray-900 py-12">
+      <div className="w-full max-w-7xl mx-auto text-center space-y-6 px-4">
         {/* Logo */}
         <div className="mb-6">
           <Image
@@ -21,7 +23,9 @@ export default function YakindayizPage() {
         <p className="text-lg md:text-2xl mb-8 opacity-90">
           Tatil, deniz ve organizasyon dünyasında çok yakında online!  
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 mb-10 justify-center w-full max-w-md mx-auto px-4">
+
+        {/* WhatsApp & Ara Butonları */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-10 justify-center w-full max-w-md mx-auto">
           <a 
             href="tel:+905304872333" 
             className="flex items-center justify-center w-full py-3.5 bg-[#004aad] text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-900/20 hover:bg-[#003380] hover:shadow-blue-900/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
@@ -39,7 +43,7 @@ export default function YakindayizPage() {
         </div>
         
         {/* Sosyal Medya İkonları */}
-        <div className="flex gap-4 text-2xl mb-10 justify-center">
+        <div className="flex gap-4 text-2xl mb-12 justify-center">
           <a 
             href="https://maps.app.goo.gl/CxGMcXUyCxLbnmut9" 
             target="_blank" 
@@ -80,6 +84,15 @@ export default function YakindayizPage() {
           >
             <i className="fab fa-youtube text-3xl"></i>
           </a>
+        </div>
+
+        {/* Category Showcase Slider - İkonların Altına Taşındı */}
+        <div className="w-full mb-16">
+          <CategoryShowcase 
+            categories={MOCK_CATEGORIES}
+            // title="Keşfetmeye Başla"
+            // subtitle="Hayalindeki deniz tatili için kategorilere göz at"
+          />
         </div>
         
         {/* Terimler Sözlüğü – mock içerik (scroll testi için) */}
@@ -200,4 +213,3 @@ export default function YakindayizPage() {
     </section>
   );
 }
-

@@ -64,8 +64,8 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/satilik" className="block text-slate-600 hover:text-slate-900 transition-colors font-light">
-                  Satılık Deniz Araçları
+                <Link href="/satilik-tekneler" className="block text-slate-600 hover:text-slate-900 transition-colors font-light">
+                  Satılık Tekneler
                 </Link>
               </li>
             </ul>

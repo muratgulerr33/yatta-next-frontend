@@ -11,6 +11,7 @@ const inter = Inter({
 
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { SiteFooter } from '@/components/layout/SiteFooter'
+import { HelinChatRoot } from '@/components/helin/HelinChatRoot'
 
 // Font Awesome CSS - tüm ikonlar için
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -91,6 +92,7 @@ export default function RootLayout({ children }) {
             {children}
           </main>
           <SiteFooter />
+          <HelinChatRoot />
         </AppStateProvider>
       </body>
     </html>
