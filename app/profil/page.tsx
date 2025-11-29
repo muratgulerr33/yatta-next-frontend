@@ -48,8 +48,6 @@ export default function ProfilPage() {
             variant="outline"
             size="md"
             onClick={() => setIsEditing(true)}
-            disabled
-            title="Çok yakında"
           >
             Düzenle
           </Button>
@@ -107,11 +105,6 @@ export default function ProfilPage() {
               </div>
             </div>
           </div>
-
-          <p className="text-xs text-[var(--color-text-secondary)]">
-            V1&apos;de bu alan sadece görüntüleme amaçlıdır. V2&apos;de düzenleme
-            formu ve kimlik doğrulamalı güncelleme akışı eklenecek.
-          </p>
         </>
       )}
     </section>

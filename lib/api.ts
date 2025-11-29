@@ -171,7 +171,7 @@ export async function fetchListing(slug: string): Promise<ListingDetail> {
    Fetch My Listings
 ------------------------------------------------------- */
 export async function fetchMyListings(): Promise<ListingDetail[]> {
-  return await request<ListingDetail[]>(`/api/v1/listings/my/`);
+  return await request<ListingDetail[]>(`/api/v1/listings/mine/`);
 }
 
 /* -------------------------------------------------------
@@ -221,6 +221,25 @@ export async function fetchPartnerPublicProfile(
   }
 
   return await res.json();
+}
+
+/* -------------------------------------------------------
+   Update Me (Profile Update)
+------------------------------------------------------- */
+export async function updateMe(payload: {
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  city?: string;
+  district?: string;
+}): Promise<{ success: boolean; user: any; message?: string }> {
+  return await request<{ success: boolean; user: any; message?: string }>(
+    `/api/v1/accounts/me/`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }
+  );
 }
 
 /* -------------------------------------------------------
