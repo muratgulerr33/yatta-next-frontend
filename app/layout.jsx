@@ -2,6 +2,8 @@
 import { Inter } from "next/font/google"
 import './globals.css'
 import { AppStateProvider } from '@/contexts/AppStateContext'
+import { HelinChatProvider } from '@/contexts/HelinChatContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -87,12 +89,16 @@ export default function RootLayout({ children }) {
     <html lang="tr" data-theme="light" className={inter.variable}>
       <body className="font-sans antialiased bg-light text-primary min-h-screen flex flex-col">
         <AppStateProvider>
-          <SiteHeader />
-          <main className="flex-1 px-[11px]">
-            {children}
-          </main>
-          <SiteFooter />
-          <HelinChatRoot />
+          <AuthProvider>
+            <HelinChatProvider>
+              <SiteHeader />
+              <main className="flex-1 px-[11px]">
+                {children}
+              </main>
+              <SiteFooter />
+              <HelinChatRoot />
+            </HelinChatProvider>
+          </AuthProvider>
         </AppStateProvider>
       </body>
     </html>

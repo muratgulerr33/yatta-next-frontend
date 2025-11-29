@@ -1,6 +1,6 @@
 'use client';
 
-import { useHelinChat } from '@/hooks/useHelinChat';
+import { useHelinChatContext } from '@/contexts/HelinChatContext';
 import { HelinChatTrigger } from './HelinChatTrigger';
 import { HelinChatWindow } from './HelinChatWindow';
 
@@ -12,7 +12,7 @@ export function HelinChatRoot() {
     sendMessage, 
     isLoading, 
     hasUnread 
-  } = useHelinChat();
+  } = useHelinChatContext();
 
   return (
     <>

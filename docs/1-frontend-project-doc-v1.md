@@ -222,7 +222,72 @@ curl -s https://api.yatta.com.tr/health/ping
 
 ---
 
-## 11) Kısa Yol Haritası (2 Hafta)
+## 11) Frontend Sayfalar ve Component'ler (Kasım 2025)
+
+### ✅ Durum: Güncel 2025
+
+**Güncel 2025 durumu:** Yeni müşteri ilişkileri sayfaları ve chat component'leri eklendi.
+
+### 📄 Yeni Sayfalar
+
+**Müşteri İlişkileri Sayfaları:**
+- `/biz-kimiz` — Hakkımızda sayfası
+- `/destek-iletisim` — İletişim sayfası
+- `/veri-silme-talebi` — Veri silme talebi sayfası
+
+**Sayfa Yapısı:**
+- Tüm sayfalar `.page-shell` container kullanır
+- Responsive padding: `px-4 py-6 sm:px-6 lg:px-8`
+- Metadata (SEO) her sayfada tanımlı
+
+### 🧩 Yeni Component'ler
+
+**HelinChat Component'leri:**
+- `components/helin/HelinChatRoot.tsx` — Chat root component
+- `contexts/HelinChatContext.tsx` — Chat context provider
+  - `HelinChatProvider` — Context provider component
+  - `useHelinChatContext` — Context hook
+
+**FlagIcon Component:**
+- `components/ui/FlagIcon.tsx` — Bayrak ikonu component (react-flagpack kullanır)
+- `components/ui/FlagIconExample.tsx` — Örnek kullanım component'i
+
+**Kullanım:**
+```tsx
+import { FlagIcon } from '@/components/ui/FlagIcon';
+
+<FlagIcon code="TR" size="lg" />
+```
+
+### 📦 Bağımlılıklar
+
+**Yeni Paketler:**
+- `react-flagpack` — Bayrak ikonları için
+
+**Kurulum:**
+```bash
+cd /home/yatta/apps/frontend
+npm install react-flagpack
+```
+
+### 🔄 Global Layout Değişiklikleri
+
+**app/layout.jsx:**
+- `metadata` ve `revalidate` export'ları eklendi
+- Global safe-area padding düzenlemeleri yapıldı
+- 15px padding ayarlamaları uygulandı
+
+**app/globals.css:**
+- Tailwind CSS token'ları güncellendi
+- Safe-area padding değişkenleri eklendi
+
+**tailwind.config.js:**
+- Yeni utility class'lar eklendi
+- Responsive breakpoint'ler güncellendi
+
+---
+
+## 12) Kısa Yol Haritası (2 Hafta)
 - **Hafta 1:** Role modeli (V2: admin, partner, member, integration), `UserRole` OneToOne bağı, `seller` grubu, JWT login (cookie), CORS ayarları.  
 - **Hafta 2:** `/login` & `/register`, korumalı `/profil` (tek panel, koşullu sekmeler), Light tema minör düzeltmeler.  
 - **Riskler:** Cookie/CORS, form doğrulama; **2 gün tampon** ayrıldı.
@@ -249,7 +314,7 @@ Kategoriler (public, SEO)
 ├─ kiralama/*
 ├─ turlar/*
 ├─ organizasyon/*
-└─ satilik-tekneler/*   # satılık yat/tekne ilanları (seller grubundaki üyeler yönetir)
+└─ satilik/*             # satılık yat/tekne ilanları (seller grubundaki üyeler yönetir)
 ```
 
 > **Not:** Tek panel yapısı; `/seller/*` ve `/partner/*` ayrı panelleri **yok**. Sekmeler rol/grup şartıyla görünür.
@@ -271,8 +336,8 @@ const tabs = [
 
 ---
 
-## 12) Değişiklik Günlüğü
-- **21.11.2025:** Müşteri ilişkileri sayfaları (5 adet) eklendi: mesafeli satış sözleşmesi, ödeme/rezervasyon, gizlilik politikası, iptal/iade koşulları, veri silme talebi. Root level URL yapısı (SEO optimize), footer entegrasyonu tamamlandı.
+## 13) Değişiklik Günlüğü
+- **24.11.2025:** Yeni müşteri ilişkileri sayfaları eklendi (`/biz-kimiz`, `/destek-iletisim`, `/veri-silme-talebi`). HelinChat component'leri ve FlagIcon component'i eklendi. Global layout safe-area refactor yapıldı.
 - **07.11.2025:** Tema **Light only** olarak **kilitlendi**; Dark **V1.1 backlog**.
 - **07.11.2025:** Dokümantasyon sadeleştirildi; üretim komutları ve sağlık kontrolleri tek yerde toplandı.
 - **Kasım 2025:** RBAC V1→V2 geçişi: `buyer`→`member`, `seller_listing`→`member`+`seller`(grup), `seller_booking`→`partner`. Tek panel `/profil` yapısı.
@@ -303,8 +368,6 @@ sudo systemctl status certbot || true
 - [2-frontend-01-operations-v1.md](2-frontend-01-operations-v1.md) — Operasyon: CI/CD, Nginx, Go-Live, CSS Fix, Sağlık
 - [3-frontend-02-setup-v1.md](3-frontend-02-setup-v1.md) — İlk Kurulum & Local Prod Test
 - [4-frontend-03-db-env-migrate-v1.md](4-frontend-03-db-env-migrate-v1.md) — .env, migrate/collectstatic, servis & sağlık
-- [7-frontend-ui-layout-v1.md](7-frontend-ui-layout-v1.md) — UI & Layout Yapısı, Responsive Davranış
-- [8-frontend-tailwind-postcss-v4-v1.md](8-frontend-tailwind-postcss-v4-v1.md) — ⚡ Tailwind CSS v4 & PostCSS Konfigürasyonu
 - [8-backend-04-rbac-v1-v2-migration-v1.md](../backend:docs/8-backend-04-rbac-v1-v2-migration-v1.md) — RBAC V1→V2 migration, roller, gruplar, izinler
 
 > Tema: **V1 = Light only (kilitli)**, **Dark = V1.1 (backlog)**

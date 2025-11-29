@@ -8,35 +8,31 @@ Amaç: **mobil öncelikli, hızlı, okunaklı ve tutarlı** bir arayüz standart
 
 ## 1. Font Sistemi
 
-### 1.1. Ürün UI font ailesi (Inter - Variable)
+### 1.1. Ürün UI font ailesi (system font stack)
 
-V1 arayüzünde ana font olarak **Inter** (Variable Font) kullanılır.
+Tüm arayüz (metinler, butonlar, formlar, tablo vs.) için **tek font ailesi** kullanılır:
 
 ```css
 :root {
-  /* Inter font değişkeni Next.js tarafından otomatik atanır */
-  --font-sans: var(--font-inter);
-}
-
-html {
-  /* Modern karakter seti özellikleri (App-like hissi) */
-  font-feature-settings: "cv11", "cv05";
+  /* Tüm UI için ana sans-serif font ailesi */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
   font-family: var(--font-sans);
 }
-```
+````
 
-**Özellikler:**
-*   **Variable Font:** Tek dosya ile tüm ağırlıklar (100-900) desteklenir.
-*   **Modern Karakter Seti:** `cv11` (Single-story a) ve `cv05` (Disambiguation l) özellikleri `html` seviyesinde aktiftir.
-*   **Fallback:** Inter yüklenemezse system fontlarına (SF Pro, Roboto vb.) düşer.
+> Not: Bu fontlar cihazın kendi native UI fontlarıdır
+> (iOS/macOS: SF Pro, Windows: Segoe UI, Android: Roboto).
 
 **Neden?**
-*   **Tutarlılık:** Android, iOS ve Windows cihazlarda birebir aynı görünüm.
-*   **Okunabilirlik:** Booking ve e-ticaret için optimize edilmiş, sayısal verilerde üstün (tabular figures) performans.
-*   **Modern Algı:** `cv11` gibi özelliklerle "App-like" modern ve temiz bir duruş.
+
+* Harici font dosyası yok → **daha hızlı yüklenme**.
+* Kullanıcı zaten bu fontlara alışık → **güven ve okunabilirlik** yüksek.
+* Hem e-ticaret hem booking için gereken “kurumsal ama sıcak” hissi verir.
+* V1 bakımı kolay; V2’de istersek kendi brand fontumuzu ekleriz.
 
 ---
 
@@ -293,9 +289,75 @@ export function Header() {
 
 ---
 
+## 6. Global Layout Safe-Area ve Padding (Kasım 2025)
+
+### 6.1. Safe-Area Padding Refactor
+
+**Güncel 2025 durumu:** Global layout safe-area padding yapısı yeniden düzenlendi.
+
+**Değişiklikler:**
+- Root layout (`app/layout.jsx`) içinde global horizontal padding eklendi
+- Site layout (`app/(site)/layout.jsx`) içindeki gereksiz padding kaldırıldı
+- Tutarlı safe-area margin'ler sağlandı
+
+**Padding Yapısı:**
+- Root layout: Global horizontal padding (15px veya responsive değerler)
+- Site layout: Gereksiz padding kaldırıldı
+- Page shell: İçerik için maksimum genişlik ve ortalama
+
+### 6.2. 15px Padding Ayarlamaları
+
+**Uygulama:**
+- Layout'larda 15px padding değerleri kullanıldı
+- Responsive breakpoint'lerde padding değerleri ayarlandı
+- Mobil ve desktop arasında tutarlılık sağlandı
+
+**Kullanım:**
+```css
+/* globals.css veya Tailwind class'ları */
+.padding-safe {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+@media (min-width: 1024px) {
+  .padding-safe {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+```
+
+### 6.3. Footer Tasarımı Güncellemeleri
+
+**Değişiklikler:**
+- Footer'a header'dakine benzer layout yapısı kazandırıldı
+- `.page-shell` container ile ortalama uygulandı
+- Responsive padding ile safe-area sağlandı
+- Footer link/paragraf renkleri Tailwind ile beyaz tonlarına çekildi
+
+**Yapı:**
+```tsx
+<footer className="w-full border-t bg-white">
+  <div className="page-shell px-4 py-6 sm:px-6 lg:px-8">
+    {/* Footer içeriği */}
+  </div>
+</footer>
+```
+
+### 6.4. Global Site Layout Reset
+
+**Amaç:** Root layout'tan `.page-shell` wrapper'ını kaldırıp, Next.js route group (`(site)`) kullanarak içerik sayfalarını `.page-shell` ile sarmak.
+
+**Değişiklikler:**
+- Root layout'tan `.page-shell` kaldırıldı
+- `(site)` route group içinde `.page-shell` uygulandı
+- Root `main` elementi unpadded bırakıldı
+- Nested layout'larda safe-area padding uygulandı
+
+---
+
 Bu doküman, **YATTA V1** tasarım kararlarının referansıdır.
 Yeni ekranlar tasarlanırken ve komponent kütüphanesi oluşturulurken bu kurallara uyulmalıdır.
 
-```
-::contentReference[oaicite:0]{index=0}
-```
+**Son Güncelleme:** 24 Kasım 2025 — Global layout safe-area ve padding değişiklikleri eklendi

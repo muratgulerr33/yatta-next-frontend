@@ -4,6 +4,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
 
 const mainNavLinks = [
   { href: '/kiralama', label: 'Kiralama' },
@@ -20,9 +21,7 @@ export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isHiddenOnScroll, setIsHiddenOnScroll] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
-
-  // Auth durumu placeholder (şimdilik false)
-  const isAuthenticated = false
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {

@@ -25,6 +25,11 @@ npm ci
 npm run build
 ```
 
+**Önemli Bağımlılıklar (Güncel 2025):**
+- `react-flagpack` — Bayrak ikonları için (FlagIcon component'i kullanır)
+- Next.js 15 (React 19)
+- Tailwind CSS
+
 **Beklenen Çıktı →** Next.js build hatasız tamamlanır (`.next/` oluşur).  
 
 **Test →** Build sonunda "Compiled successfully" benzeri mesaj.  
@@ -94,35 +99,4 @@ echo "$CSS_URL" && curl -I -L "http://localhost:3000$CSS_URL" | sed -n '1,12p'
 - **Node 18/22** ile build hatası → **Node 20** kullan.  
 - `ERR_PORT_IN_USE` → Portu kapat veya `-p` ile değiştir.  
 - Build sonrası boş sayfa → Terminal loguna bak; ortam değişkenleri `.env` dosyanla uyumlu mu kontrol et.
-- **Tailwind build hatası** → PostCSS config doğru mu kontrol et (detay: `8-frontend-tailwind-postcss-v4-v1.md`)
-
----
-
-## 7) Tailwind CSS v4 Notları
-
-⚠️ **Önemli:** Proje **Tailwind CSS v4.1.16** kullanıyor. v3'ten farklı syntax gerektirir:
-
-### PostCSS Config
-```js
-// postcss.config.cjs
-module.exports = {
-  plugins: {
-    '@tailwindcss/postcss': {},  // ✅ v4 için
-    // ❌ 'tailwindcss': {}  (v3 syntax - kullanma!)
-  },
-};
-```
-
-### globals.css
-```css
-@import "tailwindcss";  /* ✅ v4 için */
-
-/* ❌ KULLANMA (v3 syntax):
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-*/
-```
-
-📖 **Detaylı bilgi:** `docs/8-frontend-tailwind-postcss-v4-v1.md`
 

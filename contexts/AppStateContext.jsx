@@ -28,17 +28,18 @@ export function AppStateProvider({ children }) {
     setLoading(true)
     setError(null)
     
-    try {
-      const response = await api.health.ping()
-      setBackendStatus('healthy')
-      return response.data
-    } catch (err) {
-      setBackendStatus('unhealthy')
-      setError(err.message)
-      throw err
-    } finally {
-      setLoading(false)
+    // Artık throw etmeyeceği için try-catch gereksiz
+    const response = await api.health.ping()
+    
+    if (response.status === 200) {
+      setBackendStatus('up')
+    } else {
+      setBackendStatus('down')
+      setError(`Backend health check failed with status ${response.status}`)
     }
+    
+    setLoading(false)
+    return response.data
   }
   
   // Initial health check

@@ -125,7 +125,7 @@ curl -s https://api.yatta.com.tr/health/ping
 - `/turlar` — Tur listesi
 - `/konaklama` — Konaklama listesi
 - `/organizasyon/*` — Organizasyon kategorisi
-- `/satilik-tekneler/*` — Satılık yat/tekne ilanları (seller grubundaki üyeler yönetir)
+- `/satilik/*` — Satılık yat/tekne ilanları (seller grubundaki üyeler yönetir)
 - `/yakindayiz` — Ana sayfa (canonical, priority 1.0)
 
 **Detay Deseni:** `/{kök}/{slug}-{id}` (örn: `/kiralama/lorhan-yat-luks-1-saatlik-101`)
