@@ -226,73 +226,14 @@ Sayfa tam ekran hero (kahraman) sayfası olarak tasarlanmıştır:
 - JSON-LD schema markup içerir
 - SEO için canonical URL ve OpenGraph meta'ları
 
-### 6.3 Müşteri İlişkileri Sayfaları (Hukuki Sayfalar)
-
-Kasım 2025'te eklenen müşteri ilişkileri sayfaları, tüm yasal ve bilgilendirme içeriklerini kapsar. Tüm sayfalar:
-- **Ortak yapı**: `/kiralama/page.tsx` ile aynı layout ve stil standardında
-- **SEO optimize**: Her sayfada unique metadata, canonical URL ve OpenGraph tags
-- **Root level URL**: SEO best practice gereği `/hukuki/` prefix'i olmadan doğrudan root'ta
-- **Container**: `w-full max-w-2xl mx-auto space-y-10` (daha dar içerik alanı)
-- **Responsive**: Mobil, tablet ve desktop için optimize edilmiş
-- **Internal linking**: Sayfalar arası bağlantılar (özellikle gizlilik ↔ veri silme)
-
-**Sayfalar:**
-
-1. **Mesafeli Satış Sözleşmesi** (`app/(site)/mesafeli-satis-sozlesmesi/page.tsx`)
-   - **URL**: `/mesafeli-satis-sozlesmesi`
-   - **İçerik**: Satıcı/alıcı bilgileri, sözleşme konusu, ödeme şartları, cayma hakkı
-   - **Yapı**: Header + 8 bölüm (section), her biri semantic HTML ile düzenlenmiş
-   - **Link**: İptal/iade sayfasına internal link
-
-2. **Ödeme ve Rezervasyon** (`app/(site)/odeme-ve-rezervasyon/page.tsx`)
-   - **URL**: `/odeme-ve-rezervasyon`
-   - **İçerik**: Rezervasyon süreci, ödeme yöntemleri, fiyatlandırma, fatura
-   - **Yapı**: Header + 8 bölüm, ödeme detayları liste formatında
-   - **Özellik**: Havale/EFT için özel açıklama bölümü
-
-3. **Gizlilik Politikası** (`app/(site)/gizlilik-politikasi/page.tsx`)
-   - **URL**: `/gizlilik-politikasi`
-   - **İçerik**: KVKK uyumlu, veri toplama/kullanım/koruma, sosyal medya girişi
-   - **Yapı**: Header + 11 bölüm, KVKK hakları listesi
-   - **Link**: Veri silme talebi sayfasına internal link (Next.js Link component)
-   - **Özellik**: Çerez kullanımı, veri güvenliği detayları
-
-4. **İptal ve İade Koşulları** (`app/(site)/iptal-iade-kosullari/page.tsx`)
-   - **URL**: `/iptal-iade-kosullari`
-   - **İçerik**: İptal politikası, erteleme hakları, satıcı kaynaklı iptal, cayma hakkı
-   - **Yapı**: Header + 8 bölüm, zaman dilimleri ve oranlar net belirtilmiş
-   - **Özellik**: 72 saat kuralı, erteleme limiti (1 kez), iade süreci
-
-5. **Veri Silme Talebi** (`app/(site)/veri-silme-talebi/page.tsx`)
-   - **URL**: `/veri-silme-talebi`
-   - **İçerik**: KVKK veri silme hakkı, talep süreci, örnek e-posta şablonu
-   - **Yapı**: Header + 9 bölüm, kod bloğu stili örnek metin
-   - **Link**: Gizlilik politikası sayfasına internal link
-   - **Özellik**: Highlighted e-posta şablonu, 7 iş günü süre belirtilmiş
-
-**Ortak Özellikler:**
-- Tüm sayfalarda `space-y-10` ile bölümler arası tutarlı boşluk
-- `text-2xl md:text-3xl lg:text-4xl` responsive başlıklar
-- `text-sm md:text-base` responsive metin boyutları
-- `leading-relaxed md:leading-loose` okunabilirlik için satır aralığı
-- `text-muted-foreground` ile açıklama paragrafları vurgulanmış
-- Liste öğelerinde `list-disc list-inside` standart marker kullanımı
-- İletişim bölümü `border-t pt-6` ile ayrılmış
-- Her sayfada emoji kullanımı (📞, 📧, 🌐, vb.) görsel zenginlik için
-
-**Footer Entegrasyonu:**
-- `components/layout/SiteFooter.tsx` içinde MÜŞTERİ İLİŞKİLERİ bölümü
-- Tüm 5 sayfa footer'dan erişilebilir
-- URL'ler güncellenmiş: `/hukuki/*` → root level (`/mesafeli-satis-sozlesmesi`, vb.)
-
-### 6.4 Partner Sayfası (`app/partner/[slug]/page.jsx`)
+### 6.3 Partner Sayfası (`app/partner/[slug]/page.jsx`)
 
 - **Layout**: `min-h-screen bg-white`
 - **Container**: `max-w-4xl mx-auto` (896px maksimum genişlik)
 - **Grid**: `md:grid-cols-[2fr,1.2fr]` (desktop'ta 2 kolon)
 - **Özellikler**: Partner bilgileri, iletişim kutusu, responsive tasarım
 
-### 6.5 Hata Sayfaları
+### 6.4 Hata Sayfaları
 
 - **404** (`app/not-found.jsx`): Siyah arka plan, neon glow efekti
 - **Error** (`app/error.jsx`): Siyah arka plan, hata mesajı, "Tekrar Dene" butonu
@@ -391,33 +332,355 @@ Tailwind CSS varsayılan breakpoint'leri kullanılır (`tailwind.config.js` içi
 - Light/dark tema desteği hazır
 - Styleguide sayfası token'ları görselleştirmek için kullanılabilir
 
-### 9.7 Tailwind CSS v4 Güncellemesi
+---
 
-⚠️ **Önemli:** Proje **Tailwind CSS v4.1.16** kullanıyor.
+## 10. Global Layout Safe-Area Refactor (Kasım 2025)
 
-**globals.css syntax değişikliği:**
-```css
-@import "tailwindcss";  /* ✅ v4 syntax */
+### 10.1. Safe-Area Padding Düzenlemesi
 
-/* ❌ Eski (v3) syntax kullanılmıyor:
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-*/
+**Güncel 2025 durumu:** `app/(site)/layout.jsx` dosyasındaki SiteLayout bileşeni header ile hizalı safe-area pattern'ine getirildi.
+
+**Değişiklikler:**
+- Root layout (`app/layout.jsx`) içinde global horizontal padding eklendi
+- Site layout (`app/(site)/layout.jsx`) içindeki gereksiz spacing kaldırıldı
+- Tutarlı safe-area margin'ler sağlandı
+
+**Yapı:**
+```jsx
+// app/layout.jsx
+<html lang="tr" data-theme="light">
+  <body className="font-sans antialiased bg-light text-primary min-h-screen flex flex-col">
+    <SiteHeader />
+    <main className="flex-1 px-4 sm:px-6 lg:px-8">
+      {/* Global horizontal padding */}
+      {children}
+    </main>
+    <SiteFooter />
+  </body>
+</html>
 ```
 
-**PostCSS config:**
-- `@tailwindcss/postcss` plugin'i kullanılıyor (v4 için gerekli)
-- Responsive class'lar (`sm:`, `md:`, `lg:`, vb.) düzgün çalışıyor
+### 10.2. 15px Padding Ayarlamaları
 
-📖 **Detaylı bilgi:** `docs/8-frontend-tailwind-postcss-v4-v1.md`
+**Uygulama:**
+- Layout'larda 15px padding değerleri kullanıldı
+- Responsive breakpoint'lerde padding değerleri ayarlandı
+- Mobil ve desktop arasında tutarlılık sağlandı
+
+**Tailwind Config:**
+```js
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      padding: {
+        'safe': '15px',
+      },
+    },
+  },
+}
+```
+
+### 10.3. Kiralama Sayfası İç Container Düzenlemeleri
+
+**Değişiklikler:**
+- Kiralama sayfasına iç constrained container eklendi
+- `.page-shell` ile maksimum genişlik ve ortalama sağlandı
+- Responsive padding uygulandı
+
+**Yapı:**
+```tsx
+// app/(site)/kiralama/page.tsx
+<div className="page-shell px-4 py-6 sm:px-6 lg:px-8">
+  {/* Kiralama içeriği */}
+</div>
+```
+
+### 10.4. Footer Tasarımı Güncellemeleri
+
+**Değişiklikler:**
+- Footer'a header'dakine benzer layout yapısı kazandırıldı
+- `.page-shell` container ile ortalama uygulandı
+- Responsive padding ile safe-area sağlandı
+- Footer link/paragraf renkleri Tailwind ile beyaz tonlarına çekildi
+
+**Yapı:**
+```tsx
+// components/layout/SiteFooter.tsx
+<footer className="w-full border-t bg-white">
+  <div className="page-shell px-4 py-6 sm:px-6 lg:px-8">
+    <div className="flex flex-col md:flex-row justify-between items-center">
+      {/* Footer içeriği */}
+    </div>
+  </div>
+</footer>
+```
+
+### 10.5. Tailwind ve globals.css Düzenlemeleri
+
+**globals.css:**
+- Safe-area padding değişkenleri eklendi
+- CSS token'ları güncellendi
+- Responsive utility class'lar eklendi
+
+**tailwind.config.js:**
+- Yeni utility class'lar eklendi
+- Responsive breakpoint'ler güncellendi
+- Custom padding değerleri tanımlandı
+
+### 10.6. Global Site Layout Reset
+
+**Amaç:** Root layout'tan `.page-shell` wrapper'ını kaldırıp, Next.js route group (`(site)`) kullanarak içerik sayfalarını `.page-shell` ile sarmak.
+
+**Değişiklikler:**
+- Root layout (`app/layout.jsx`) içinden `.page-shell` kaldırıldı
+- `(site)` route group içinde `.page-shell` uygulandı
+- Root `main` elementi unpadded bırakıldı (sadece global horizontal padding)
+- Nested layout'larda safe-area padding uygulandı
+
+**Önceki Yapı:**
+```jsx
+// app/layout.jsx (ESKİ)
+<main className="flex-1">
+  <div className="page-shell px-4 py-6 sm:px-6 lg:px-8">
+    {children}
+  </div>
+</main>
+```
+
+**Yeni Yapı:**
+```jsx
+// app/layout.jsx (YENİ)
+<main className="flex-1 px-4 sm:px-6 lg:px-8">
+  {children}
+</main>
+
+// app/(site)/layout.jsx
+<div className="page-shell">
+  {children}
+</div>
+```
 
 ---
 
-**Son Güncelleme**: 21 Kasım 2025
+---
+
+## 11. Listing Wizard Layout (Güncel 2025-11-27)
+
+### 11.1. Wizard Yapısı
+
+**Dosya:** `components/listing/ListingWizard.tsx`
+
+**Temel Yapı:**
+- 5 adımlı wizard (Step1-5)
+- Stepper navigasyonu
+- Form state yönetimi
+- Backend'e submit işlemi
+
+**Layout:**
+```tsx
+<div className="page-shell px-4 py-6 sm:px-6 lg:px-8">
+  <Stepper currentStep={currentStep} steps={steps} />
+  <Step1IdentityLocation />
+  <Step2Technical />
+  <Step3StoryPrice />
+  <Step4Photos />
+  <Step5SellerReview />
+</div>
+```
+
+### 11.2. Step Layout'ları
+
+**Step1IdentityLocation:**
+- Tekne tipi, marka, model seçimi
+- Konum bilgileri (il, ilçe) - `data/locations/tr-cities.ts` dosyasındaki TR_CITIES data kullanır
+- Responsive form layout
+- Türkiye şehir/ilçe verisi dropdown'ları için kullanılır
+
+**Step2Technical:**
+- Teknik özellikler (boyut, kapasite, motor bilgileri)
+- Grid layout (mobil: tek kolon, desktop: 2 kolon)
+
+**Step3StoryPrice:**
+- Hikaye/ açıklama textarea
+- Fiyat input (Currency seçimi ile)
+- **Not (2025-11-27):** "Fiyat talep üzerine" checkbox'ı kaldırıldı (UI/UX iyileştirmesi)
+- Responsive layout
+
+**Step4Photos:**
+- Fotoğraf yükleme (10 foto limit)
+- Drag & drop desteği
+- Preview grid layout
+- **Not (2025-11-27):** Medya UX iyileştirmeleri yapıldı (10 foto limit, drag & drop, preview grid)
+
+**Step5SellerReview:**
+- Satıcı tipi seçimi (SellerType: SAHİBİNDEN, EMLAKÇIDAN, BROKER, DİĞER)
+- **Not (2025-11-27):** Satıcı tipi label'ı "Sahibi"den "Sahibinden"e güncellendi (backend SellerType enum güncellemesi ile uyumlu)
+- İletişim bilgileri
+- Özet görünümü
+
+---
+
+## 12. Profil Paneli Layout (Güncel 2025-11-27)
+
+### 12.1. Profil Layout Yapısı
+
+**Dosya:** `app/profil/layout.tsx`
+
+**Temel Yapı:**
+- Tab navigasyonu (ProfilTabs component)
+- Auth kontrolü
+- RBAC V2.1: isAuthenticated kullanımı (inSeller yerine)
+
+**Layout:**
+```tsx
+<div className="page-shell">
+  <ProfilTabs isAuthenticated={isAuthenticated} role={role} />
+  <div className="profil-content">
+    {children}
+  </div>
+</div>
+```
+
+**Güncelleme (2025-12-03):**
+- Profil ilanlar rota düzeltmesi: `/profil/ilanlarim` → `/profil/ilanlar` olarak güncellendi
+- `app/profil/layout.tsx` dosyasındaki `profileNavItems` array'inde "İlanlarım" linkinin `href` değeri `/profil/ilanlarim` → `/profil/ilanlar` olarak güncellendi
+- Eski `/profil/ilanlarim` sayfası artık `/profil/ilanlar`'a redirect eden minimal sayfa olarak çalışıyor
+
+### 12.2. ProfilTabs Component
+
+**Dosya:** `components/profil/ProfilTabs.tsx`
+
+**Tab Yapısı (RBAC V2.1):**
+- Rezervasyonlar: `show: true` (tüm auth kullanıcılar)
+- İlanlar: `show: isAuthenticated` (RBAC V2.1: önceden `inSeller`)
+- Hizmetler: `show: role==='partner'`
+- Takvim: `show: role==='partner'`
+- Ödemeler: `show: true`
+- Mesajlar: `show: true`
+- Hesabım: `show: true`
+
+**Layout:**
+- Horizontal tab navigasyonu (desktop)
+- Dropdown/accordion (mobil)
+- Active tab highlighting
+
+### 12.3. ProfileEditForm Layout
+
+**Dosya:** `components/profil/ProfileEditForm.tsx`
+
+**Form Yapısı:**
+- Kullanıcı bilgileri düzenleme
+- Responsive form layout
+- Validation ve error handling
+
+---
+
+## 13. İlan Detay Sayfası Layout (Güncel 2025-11-28)
+
+### 13.1. Sayfa Yapısı
+
+**Dosya:** `app/(site)/ilan/[slug]/page.tsx`
+
+**Temel Layout:**
+```tsx
+<div className="page-shell">
+  <ListingGallery images={listing.media} />
+  <div className="grid md:grid-cols-[2fr,1fr] gap-6">
+    <ListingDetails listing={listing} />
+    <ListingActionSidebar listing={listing} />
+  </div>
+  <MobileStickyActionBar listing={listing} />
+</div>
+```
+
+### 13.2. ListingGallery Component
+
+**Dosya:** `components/listing/ListingGallery.tsx`
+
+**Özellikler:**
+- Fullscreen slider desteği
+- Mobil swipe gesture'ları
+- Ok butonları (stil güncellemesi)
+- Thumbnail navigasyonu
+
+**Layout:**
+- Desktop: Grid layout (ana görsel + thumbnails)
+- Mobil: Swipeable slider
+
+### 13.3. ListingActionSidebar Component
+
+**Dosya:** `components/listing/ListingActionSidebar.tsx`
+
+**Özellikler:**
+- Favorilere ekle/çıkar butonu
+- İletişim butonu
+- Paylaş butonu
+- Sticky positioning (desktop)
+
+**Layout:**
+- Desktop: Sağ sidebar (sticky)
+- Mobil: Gizli (MobileStickyActionBar kullanılır)
+
+### 13.4. MobileStickyActionBar Component
+
+**Dosya:** `components/listing/MobileStickyActionBar.tsx`
+
+**Özellikler:**
+- Mobilde sayfa altında sticky bar
+- Favori ve iletişim butonları
+- Responsive görünüm
+
+---
+
+## 14. Satılık Tekneler Sayfası Layout (Güncel 2025-11-28)
+
+### 14.1. Liste Sayfası Yapısı
+
+**Dosya:** `app/(site)/satilik-tekneler/page.tsx`
+
+**Temel Layout:**
+```tsx
+<div className="page-shell px-4 py-6 sm:px-6 lg:px-8">
+  <h1>Satılık Tekneler</h1>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {listings.map(listing => (
+      <SaleBoatCard key={listing.id} {...mapListingToCardProps(listing)} />
+```
+
+**Not:** `mapListingToCardProps` fonksiyonu Listing verisini SaleBoatCard component'inin beklediği prop formatına dönüştürür (2025-11-29 güncellemesi).
+    ))}
+  </div>
+  <Pagination />
+</div>
+```
+
+### 14.2. SaleBoatCard Component
+
+**Dosya:** `components/listing/SaleBoatCard.tsx`
+
+**Layout:**
+- Kart yapısı (image + content)
+- Responsive grid (mobil: 1 kolon, tablet: 2 kolon, desktop: 3 kolon)
+- Hover efektleri
+- Design token'lara uyumlu
+
+**İçerik:**
+- Kapak fotoğrafı
+- Başlık ve konum
+- Fiyat bilgisi
+- Temel özellikler (boyut, yıl, vb.)
+
+### 14.3. Pagination
+
+**Özellikler:**
+- DRF pagination desteği
+- Sayfa numaraları
+- Next/Previous butonları
+
+---
+
+**Son Güncelleme**: 03 Aralık 2025 — Profil ilanlar rota düzeltmesi eklendi. `/profil/ilanlarim` → `/profil/ilanlar` redirect yapısı eklendi.
 
 **Hazırlayan**: Kod analizi ile otomatik oluşturulmuştur.
-
-**Değişiklik Günlüğü**:
-- **21 Kasım 2025**: Müşteri ilişkileri sayfaları (5 adet hukuki sayfa) eklendi. Root level URL yapısı, SEO optimize içerikler ve footer entegrasyonu tamamlandı.
 

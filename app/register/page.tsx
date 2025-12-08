@@ -17,9 +17,6 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState<RegisterData>({
     email: '',
     password: '',
-    phone: '',
-    city: '',
-    district: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,9 +37,13 @@ export default function RegisterPage() {
 
     // Email validation
     if (!formData.email) {
-      newErrors.email = 'E-posta gereklidir';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Geçerli bir e-posta adresi giriniz';
+      newErrors.email = 'E-posta adresi gereklidir';
+    } else {
+      // Basit email format kontrolü
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Geçerli bir e-posta adresi girin';
+      }
     }
 
     // Password validation
@@ -114,7 +115,7 @@ export default function RegisterPage() {
             Kayıt Ol
           </h1>
           <p className="text-slate-600">
-            Yeni hesap oluşturarak başlayın
+            E-posta adresinizle kayıt olun, hesabınızı istediğiniz zaman profil ekranından tamamlayın.
           </p>
         </header>
 
@@ -135,6 +136,7 @@ export default function RegisterPage() {
             value={formData.email}
             onChange={handleChange}
             placeholder="ornek@email.com"
+            autoComplete="email"
             error={errors.email}
             required
           />
@@ -149,39 +151,6 @@ export default function RegisterPage() {
             error={errors.password}
             helperText="En az 8 karakter"
             required
-          />
-
-          {/* Telefon (Opsiyonel) */}
-          <Input
-            label="Cep Telefonu"
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="+90 5XX XXX XX XX"
-            error={errors.phone}
-          />
-
-          {/* Şehir (Opsiyonel) */}
-          <Input
-            label="Şehir"
-            type="text"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            placeholder="İstanbul"
-            error={errors.city}
-          />
-
-          {/* İlçe (Opsiyonel) */}
-          <Input
-            label="İlçe"
-            type="text"
-            name="district"
-            value={formData.district}
-            onChange={handleChange}
-            placeholder="Kadıköy"
-            error={errors.district}
           />
 
           {/* Submit Button */}

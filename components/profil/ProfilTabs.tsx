@@ -13,10 +13,10 @@ type Tab = {
 };
 
 interface ProfilTabsProps {
-  inSeller: boolean;
+  isAuthenticated: boolean;
 }
 
-export function ProfilTabs({ inSeller }: ProfilTabsProps) {
+export function ProfilTabs({ isAuthenticated }: ProfilTabsProps) {
   const pathname = usePathname();
   const { toggleChat } = useHelinChatContext();
 
@@ -30,13 +30,13 @@ export function ProfilTabs({ inSeller }: ProfilTabsProps) {
     {
       href: '/profil/ilanlar',
       label: 'Tekne İlanlarım',
-      show: inSeller,
+      show: isAuthenticated,
       type: 'link' as const,
     },
     {
       href: '/profil/ilan-ver',
       label: 'İlan ver',
-      show: inSeller,
+      show: isAuthenticated,
       type: 'link' as const,
     },
     {

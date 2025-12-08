@@ -101,3 +101,105 @@ Bu talimatlar, proje boyunca:
 - Eski birleşik "YATTA NEXT + DJANGO (TÜMLEŞİK)" referansları kanonik adlara taşındı.
 - Kanonik dosyalar: 1-frontend-project-doc-v1.md, 6-backend-project-doc-v1.md.
 - İlgili FE/BE kurulum ve migrate dosyaları V1 adlarıyla güncellendi.
+
+---
+
+## Son 7 Günlük Geliştirme Döngüsü (Güncel 2025-12-03)
+
+### Dokümantasyon Hizalama Süreci
+
+Proje dokümantasyonu, son 7 günlük geliştirme özeti ile düzenli olarak hizalanmaktadır.
+
+**Kaynak Dosya:**
+- `apps/7days-develop.md5` — Son 7 günlük (2025-11-26 – 2025-12-03) geliştirme özeti
+- Cursor chat JSON export'undan otomatik oluşturulur
+- 45 sohbet detayı içerir
+
+**Hedef Dokümanlar:**
+- `gpt guncel dokumanlar 2 aralık/` klasöründeki 11 kalıcı proje dokümanı
+- Her doküman, 7days özetindeki ilgili değişikliklerle güncellenir
+
+**Hizalama Süreci:**
+1. 7days-develop.md5 analizi (Backend/Frontend/Ops kategorilerine ayırma)
+2. Doküman envanteri ve kapsam eşleştirme
+3. Her dokümanı tek tek güncelleme
+4. Tutarlılık ve kalite kontrolü
+5. 7days-develop.md5'e hizalama durumu ekleme
+
+**Önemli Notlar:**
+- Dokümanlar kodun gerçek durumu + son 7 gün değişiklikleriyle %100 hizalı tutulur
+- Mevcut başlık yapısı (H1/H2) mümkün olduğunca korunur
+- Eski ama hâlâ geçerli bilgiler silinmez; "Güncel 2025 durumu" alt maddeleri eklenir
+- Değişiklik günlükleri her dokümanda güncel tutulur
+
+**Son Hizalama:**
+- Tarih: 2025-12-03
+- Kapsam: RBAC V2.1, Cookie JWT authentication, Listing Wizard, Profil paneli, İlan detay sayfası, Satılık tekneler sayfası
+
+**3 Aralık 2025 Güncellemeleri:**
+- Frontend Cookie Credentials Fix: `lib/api.ts` dosyasına `credentials: "include"` eklendi
+- Profil ilanlar rota düzeltmesi: `/profil/ilanlarim` → `/profil/ilanlar` redirect yapısı
+- İlanlarım "Sil" UI iyileştirmeleri: Silme sonrası kartın hemen kaybolması, local state yönetimi
+- İlan detay sayfası 404 düzeltmeleri: Silinmiş ilanlar için graceful yönlendirme
+- Listing Wizard ve profil paneli component'lerinde iyileştirmeler
+
+---
+
+## Çalışma Şekli Kuralları (Güncel 2025-12-03)
+
+### Cookie JWT Authentication Pattern
+
+**Backend:**
+- JWT token'ları HttpOnly cookie olarak set edilir
+- `CookieJWTAuthentication` class'ı cookie'den token okur
+- CORS ayarları `credentials: "include"` için yapılandırılmıştır
+
+**Frontend:**
+- Tüm API isteklerinde `credentials: "include"` kullanılır
+- `AuthContext.tsx` ile authentication durumu yönetilir
+- `useRequireAuth.ts` hook ile auth korumalı sayfalar oluşturulur
+
+### RBAC V2.1 Değişiklik Süreci
+
+**Değişiklik:**
+- Seller grubu zorunluluğu kaldırıldı
+- Genel ilan yetkisi tüm login kullanıcılar için açık (IsAuthenticated)
+- `IsSellerListing` permission'ı artık kullanılmamaktadır
+
+**Frontend Etkisi:**
+- `ProfilTabs` component'inde `inSeller` → `isAuthenticated` değişikliği
+- "Tekne İlanlarım" ve "İlan ver" tab'ları artık tüm login kullanıcılar için görünür
+
+**Güvenlik:**
+- Owner filtreleri korundu
+- ListingMedia owner kontrolleri aktif
+- Public endpoint'ler değişmedi
+
+---
+
+## Dokümantasyon Dosyaları
+
+Proje dokümantasyonu aşağıdaki dosyalardan oluşur:
+
+**Frontend Dokümanları:**
+1. `1-frontend-project-doc-v1.md` — Ana frontend proje dokümantasyonu (mimari, sayfalar, component'ler)
+2. `2-frontend-01-operations-v1.md` — CI/CD, Nginx, Go-Live, CSS fix, sağlık kontrolleri
+3. `3-frontend-02-setup-v1.md` — İlk kurulum & local prod test
+4. `4-frontend-03-db-env-migrate-v1.md` — .env, migrate/collectstatic, servis & sağlık
+5. `5-frontend-04-ui-rules-v1.md` — UI kuralları ve standartları
+6. `5-frontend-05-design-tokens-v1.md` — Tasarım token'ları ve renk paleti
+11. `11-frontend-ui-layout-v1.md` — UI layout ve component yapısı
+13. `13-frontend-06-favorites-sync-v1.md` — Favoriler sisteminin frontend + backend entegrasyonu ve test senaryoları
+
+**Backend Dokümanları:**
+6. `6-backend-project-doc-v1.md` — Ana backend proje dokümantasyonu (mimari, modeller, API)
+7. `7-backend-03-db-env-migrate-v1.md` — .env, migrate/collectstatic, servis & sağlık
+8. `8-backend-04-rbac-v1-v2-migration-v1.md` — RBAC V1→V2 geçiş tarihçesi (legacy)
+12. `12-backend-05-rbac-v2.1-member-default-v1.md` — Güncel RBAC ve permission yapısı (seller kaldırıldı, member varsayılan)
+
+**Proje Genel Dokümanları:**
+9. `9-project-instructions-v1.md` — Proje çalışma şekli ve talimatları (bu dosya)
+10. `10-backend-db-dump-2025-12-02.sql` — Veritabanı dump dosyası
+
+---
+

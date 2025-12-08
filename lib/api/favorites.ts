@@ -1,119 +1,70 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.yatta.com.tr';
+// lib/api/favorites.ts
+import { request, ApiError, type ListingSummary } from "../api";
 
 export interface Favorite {
   id: number;
-  listing: {
-    id: number;
-    title: string;
-    slug: string;
-    price: string | number;
-    currency: string;
-    location_province: string | null;
-    location_district: string | null;
-    length_m: string | number | null;
-    year_built: number | null;
-    cabin_count: number | null;
-    media: Array<{
-      id: number;
-      image: string;
-      is_cover: boolean;
-      order: number;
-    }>;
-  };
+  listing: ListingSummary;
   created_at: string;
   updated_at: string;
 }
 
-export interface FavoriteResponse {
-  id: number;
-  listing: Favorite['listing'];
-  created_at: string;
-  updated_at: string;
+const FAVORITES_BASE = "/api/v1/favorites/";
+
+export async function getFavorites(): Promise<Favorite[]> {
+  const data = await request<any>(FAVORITES_BASE, {
+    method: "GET",
+  });
+  // Paginated response handling: hem düz array, hem { results: [] } için güvenli şekilde favori array'ini çıkar
+  const favoritesArray = Array.isArray(data) ? data : data?.results ?? [];
+  return favoritesArray;
 }
 
-/**
- * Kullanıcının favorilerini getir
- */
-export async function fetchFavorites(): Promise<Favorite[]> {
+export async function addFavorite(listingId: number): Promise<Favorite> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/favorites/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Giriş yapmanız gerekiyor');
-      }
-      throw new Error(`Favoriler yüklenemedi: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Fetch favorites error:', error);
-    throw error;
-  }
-}
-
-/**
- * Favori ekle
- */
-export async function addFavorite(listingId: number): Promise<FavoriteResponse> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/favorites/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
+    const favorite = await request<Favorite>(FAVORITES_BASE, {
+      method: "POST",
+      // Backend FavoriteSerializer listing_id write-only field bekliyor
       body: JSON.stringify({ listing_id: listingId }),
     });
+    return favorite;
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 400 && err.data) {
+      // Backend "Bu ilan zaten favorilerinizde." validation error'u
+      try {
+        const data = err.data as any;
+        const messages =
+          (data.listing as string[]) ??
+          (Array.isArray(data) ? data : null);
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Giriş yapmanız gerekiyor');
+        const alreadyFav =
+          Array.isArray(messages) &&
+          messages.some((m) =>
+            String(m).includes("Bu ilan zaten favorilerinizde")
+          );
+
+        if (alreadyFav) {
+          // İlan zaten favorilerde → mevcut favoriyi bul ve onu dön
+          const favorites = await getFavorites();
+          const existing = favorites.find(
+            (fav) => fav.listing.id === listingId
+          );
+          if (existing) {
+            return existing;
+          }
+        }
+      } catch {
+        // parse hatası durumunda normal hata flow'una düşsün
       }
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || `Favori eklenemedi: ${response.status}`);
     }
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Add favorite error:', error);
-    throw error;
+    // Diğer tüm durumlarda hatayı aynen fırlat
+    throw err;
   }
 }
 
-/**
- * Favori kaldır
- */
 export async function removeFavorite(favoriteId: number): Promise<void> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/favorites/${favoriteId}/`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Giriş yapmanız gerekiyor');
-      }
-      if (response.status === 404) {
-        throw new Error('Favori bulunamadı');
-      }
-      throw new Error(`Favori kaldırılamadı: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('Remove favorite error:', error);
-    throw error;
-  }
+  await request<void>(`${FAVORITES_BASE}${favoriteId}/`, {
+    method: "DELETE",
+  });
 }
 

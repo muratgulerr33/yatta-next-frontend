@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { ListingFormValues } from "../ListingWizard";
+import type { ListingFormValues } from "@/lib/types/listings";
 
 const CURRENCY_OPTIONS = [
   { value: "TRY", label: "TL" },

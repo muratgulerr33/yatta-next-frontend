@@ -1,16 +1,54 @@
 "use client";
 
 import React from "react";
-import type { ListingFormValues } from "../ListingWizard";
+import type { ListingFormValues } from "@/lib/types/listings";
 
 type Props = {
   values: ListingFormValues;
   onChange: (patch: Partial<ListingFormValues>) => void;
   onBack: () => void;
   onSubmit: () => void;
+  isSubmitting?: boolean;
 };
 
-export function Step5SellerReview({ values, onChange, onBack, onSubmit }: Props) {
+export function Step5SellerReview({ values, onChange, onBack, onSubmit, isSubmitting = false }: Props) {
+  const [phoneError, setPhoneError] = React.useState<string | null>(null);
+
+  const validatePhone = (phone: string): string | null => {
+    if (!phone || phone.trim().length === 0) {
+      return 'Telefon numarası zorunludur';
+    }
+    
+    // Sadece rakam, +, -, (, ), boşluk karakterlerine izin ver
+    const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+    if (!phoneRegex.test(phone)) {
+      return 'Telefon numarası sadece rakam, +, -, (, ) ve boşluk karakterleri içerebilir';
+    }
+    
+    // Sadece rakam ve + karakterlerini sayarak min uzunluk kontrolü
+    const digitsOnly = phone.replace(/[\s\+\-\(\)]/g, '');
+    if (digitsOnly.length < 7) {
+      return 'Telefon numarası en az 7 rakam içermelidir';
+    }
+    
+    return null;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    onChange({ contact_phone: value });
+    setPhoneError(validatePhone(value));
+  };
+
+  const handleSubmit = () => {
+    const error = validatePhone(values.contact_phone);
+    if (error) {
+      setPhoneError(error);
+      return;
+    }
+    onSubmit();
+  };
+
   return (
     <div className="mt-4">
       <div className="grid gap-6 md:grid-cols-2">
@@ -46,11 +84,20 @@ export function Step5SellerReview({ values, onChange, onBack, onSubmit }: Props)
             </label>
             <input
               type="tel"
-              className="w-full rounded-lg border border-gray-300 p-2 text-sm"
+              className={`w-full rounded-lg border p-2 text-sm ${
+                phoneError ? 'border-red-300' : 'border-gray-300'
+              }`}
               value={values.contact_phone}
-              onChange={(e) => onChange({ contact_phone: e.target.value })}
-              placeholder="+90 555 123 45 67"
+              onChange={handlePhoneChange}
+              placeholder="Örn: +90 555 123 45 67"
+              required
             />
+            {phoneError && (
+              <p className="text-xs text-red-500 mt-1">{phoneError}</p>
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              Format serbest, minimum 7 rakam
+            </p>
           </div>
         </div>
 
@@ -123,10 +170,11 @@ export function Step5SellerReview({ values, onChange, onBack, onSubmit }: Props)
         </button>
         <button
           type="button"
-          onClick={onSubmit}
-          className="rounded-lg bg-green-600 px-6 py-2 text-sm font-medium text-white"
+          onClick={handleSubmit}
+          disabled={isSubmitting || !!phoneError}
+          className="rounded-lg bg-green-600 px-6 py-2 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          İlanı Gönder
+          {isSubmitting ? 'Kaydediliyor...' : 'İlanı Gönder'}
         </button>
       </div>
     </div>

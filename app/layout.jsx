@@ -24,12 +24,10 @@ const BASE_URL = 'https://yatta.com.tr'
 
 export const metadata = {
   metadataBase: new URL(BASE_URL),
-  title: {
-    default: 'Yatta - Yakında',
-    template: '%s | Yatta',
-  },
-  description: 'Yeni Yatta deneyimine hazır olun! Tatil, deniz ve organizasyon dünyasında çok yakında online!',
-  keywords: ['yatta', 'tatil', 'deniz', 'organizasyon', 'marina', 'mersin', 'eğriçam'],
+  title: 'Yatta – Yat Kiralama, Mavi Tur ve Tekne İlanları',
+  description:
+    'Yatta, yat kiralama, mavi tur, tekne turları, organizasyonlar ve satılık tekneler için akıllı arama ve ilan platformudur. Kategorilere göre tekneleri keşfet, favorilerine ekle ve güvenle iletişime geç.',
+  keywords: ['yatta', 'yat kiralama', 'mavi tur', 'tekne turları', 'organizasyon', 'satılık tekneler', 'marina', 'mersin', 'eğriçam'],
   authors: [{ name: 'Yatta' }],
   creator: 'Yatta',
   publisher: 'Yatta',
@@ -39,15 +37,16 @@ export const metadata = {
     telephone: false,
   },
   alternates: {
-    canonical: BASE_URL,
+    canonical: '/',
   },
   openGraph: {
+    title: 'Yatta – Yat Kiralama, Mavi Tur ve Tekne İlanları',
+    description:
+      'Yatta, yat kiralama, mavi tur, tekne turları, organizasyonlar ve satılık tekneler için akıllı arama ve ilan platformudur.',
+    url: 'https://yatta.com.tr/',
+    siteName: 'Yatta',
     type: 'website',
     locale: 'tr_TR',
-    url: BASE_URL,
-    siteName: 'Yatta',
-    title: 'Yatta - Yakında',
-    description: 'Yeni Yatta deneyimine hazır olun! Tatil, deniz ve organizasyon dünyasında çok yakında online!',
     images: [
       {
         url: '/yatta-icon.webp',
@@ -59,8 +58,9 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Yatta - Yakında',
-    description: 'Yeni Yatta deneyimine hazır olun!',
+    title: 'Yatta – Yat Kiralama, Mavi Tur ve Tekne İlanları',
+    description:
+      'Yatta, yat kiralama, mavi tur, tekne turları, organizasyonlar ve satılık tekneler için akıllı arama ve ilan platformudur.',
     images: ['/yatta-icon.webp'],
   },
   robots: {

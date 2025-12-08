@@ -222,11 +222,11 @@ curl -s https://api.yatta.com.tr/health/ping
 
 ---
 
-## 11) Frontend Sayfalar ve Component'ler (Kasım 2025)
+## 11) Frontend Sayfalar ve Component'ler (Güncel 2025-12-03)
 
 ### ✅ Durum: Güncel 2025
 
-**Güncel 2025 durumu:** Yeni müşteri ilişkileri sayfaları ve chat component'leri eklendi.
+**Güncel 2025 durumu:** Yeni müşteri ilişkileri sayfaları, chat component'leri, Listing Wizard, Profil paneli, Login/Register sayfaları, İlan detay sayfası ve Satılık tekneler sayfası eklendi.
 
 ### 📄 Yeni Sayfalar
 
@@ -234,6 +234,31 @@ curl -s https://api.yatta.com.tr/health/ping
 - `/biz-kimiz` — Hakkımızda sayfası
 - `/destek-iletisim` — İletişim sayfası
 - `/veri-silme-talebi` — Veri silme talebi sayfası
+
+**Auth Sayfaları (Güncel 2025-11-27):**
+- `/login` — Giriş sayfası (Cookie JWT authentication, LoginForm component kaldırıldı - sayfa içinde form implementasyonu - 2025-11-28)
+- `/register` — Kayıt sayfası (Cookie JWT authentication)
+
+**Profil Paneli Sayfaları (Güncel 2025-11-27):**
+- `/profil` — Ana profil sayfası (skeleton UI, 6 sekme)
+- `/profil/ilanlar` — İlanlarım sayfası (RBAC V2.1: artık tüm login kullanıcılar için)
+- `/profil/rezervasyonlar` — Rezervasyonlar sayfası
+- `/profil/favoriler` — Favoriler sayfası
+- `/profil/mesajlar` — Mesajlar sayfası
+- `/profil/hesabim` — Hesabım sayfası (ProfileEditForm)
+
+**İlan Sayfaları (Güncel 2025-11-28):**
+- `/ilan/[slug]` — İlan detay sayfası (gerçek backend verisiyle)
+- `/satilik-tekneler` — Satılık tekneler liste sayfası (gerçek backend API ile)
+- `/ilan-ver/satilik-tekne` — İlan verme wizard'ı (auth korumalı)
+
+> **Favoriler Sistemi:** Kullanıcılar satılık tekne kartlarındaki kalp ikonlarıyla ilanları favorileyebilir. Favori durumları `/satilik-tekneler` listesi ile `Profil > Favorilerim` sayfası arasında senkron tutulur. Detaylı teknik dokümantasyon için `13-frontend-06-favorites-sync-v1.md` dosyasına bakın.
+
+**Kategori "Yakında" Sayfaları (Güncel 2025-11-28):**
+- `/turlar` — CategoryComingSoon component
+- `/kiralama` — CategoryComingSoon component
+- `/konaklama` — CategoryComingSoon component
+- `/organizasyon` — CategoryComingSoon component
 
 **Sayfa Yapısı:**
 - Tüm sayfalar `.page-shell` container kullanır
@@ -251,6 +276,39 @@ curl -s https://api.yatta.com.tr/health/ping
 **FlagIcon Component:**
 - `components/ui/FlagIcon.tsx` — Bayrak ikonu component (react-flagpack kullanır)
 - `components/ui/FlagIconExample.tsx` — Örnek kullanım component'i
+
+**Listing Wizard Component'leri (Güncel 2025-11-27):**
+- `components/listing/ListingWizard.tsx` — Ana wizard container
+- `components/listing/steps/Step1IdentityLocation.tsx` — Adım 1: Kimlik ve Konum (TR_CITIES data kullanır)
+- `components/listing/steps/Step2Technical.tsx` — Adım 2: Teknik Özellikler
+- `components/listing/steps/Step3StoryPrice.tsx` — Adım 3: Hikaye ve Fiyat
+- `components/listing/steps/Step4Photos.tsx` — Adım 4: Fotoğraflar (10 foto limit)
+- `components/listing/steps/Step5SellerReview.tsx` — Adım 5: Satıcı Bilgileri ve Özet
+
+**Data Dosyaları:**
+- `data/locations/tr-cities.ts` — Türkiye şehir/ilçe verisi (TR_CITIES), Step1IdentityLocation'da kullanılır
+
+**Profil Paneli Component'leri (Güncel 2025-11-27):**
+- `components/profil/ProfilTabs.tsx` — Profil sekme navigasyonu (RBAC V2.1: isAuthenticated kullanır)
+- `components/profil/ProfileEditForm.tsx` — Profil düzenleme formu
+
+**İlan Component'leri (Güncel 2025-11-28):**
+- `components/listing/SaleBoatCard.tsx` — Satılık tekne kartı
+- `components/listing/ListingGallery.tsx` — İlan galeri (fullscreen slider desteği)
+- `components/listing/ListingActionSidebar.tsx` — İlan aksiyon sidebar'ı
+- `components/listing/MobileStickyActionBar.tsx` — Mobil yapışkan aksiyon çubuğu
+- `components/listings/ListingEditDialog.tsx` — İlan düzenleme dialog'u
+- `components/listings/ListingRow.tsx` — İlan satırı (liste görünümü)
+
+**Layout Component'leri (Güncel 2025-11-27):**
+- `components/layout/SiteHeader.tsx` — Header bileşeni (logo, navigasyon menüsü, RBAC V2 + Helin entegrasyonu - 2025-11-27)
+
+**UI Component'leri (Güncel 2025-11-27):**
+- `components/ui/Input.tsx` — Input component (hydration fix ile, useId kullanımı - 2025-11-28)
+- `components/ui/PasswordInput.tsx` — Şifre input component
+- `components/ui/Button.tsx` — Button component
+- `components/ui/CategoryComingSoon.tsx` — Kategori "yakında" component'i
+- `components/ui/CategoryShowcase.tsx` — Kategori showcase component'i (görsel tasarım güncellemesi - 2025-11-26)
 
 **Kullanım:**
 ```tsx
@@ -287,19 +345,75 @@ npm install react-flagpack
 
 ---
 
+## 11.1) Authentication Sistemi — Cookie JWT (Güncel 2025-12-03)
+
+### ✅ Durum: Tamamlandı
+
+**Cookie JWT Authentication:**
+- JWT token'ları HttpOnly cookie olarak backend'den set edilir
+- Frontend'de `credentials: "include"` ile tüm API isteklerinde cookie'ler otomatik gönderilir
+- Cookie'den authentication durumu kontrol edilir
+
+**Dosyalar:**
+- `contexts/AuthContext.tsx` — Cookie JWT desteği ile authentication context
+  - `AuthProvider` — Context provider component
+  - `useAuth` — Authentication hook
+  - `User`, `AuthContextType` — Type definitions
+- `hooks/useRequireAuth.ts` — Auth korumalı sayfalar için hook
+- `lib/api/auth.ts` — Auth API client (Cookie JWT entegrasyonu)
+  - `RegisterData`, `LoginData`, `AuthResponse` — Type definitions
+
+**API Client Güncellemeleri:**
+- `lib/api.ts` — `request` fonksiyonuna `credentials: "include"` eklendi
+  - `fetchListing` — Gerçek backend'e bağlandı
+  - `api.health.ping()` — 404 ve diğer hata durumlarında throw etmeyecek şekilde düzenlendi (2025-11-28)
+  - `ListingMedia`, `ListingSummary`, `ListingDetail`, `PartnerPublicProfile`, `PaginatedResponse` — Type definitions
+- `lib/media.ts` — `getMediaUrl` helper fonksiyonu
+- `lib/api/favorites.ts` — Favoriler API client
+  - `Favorite` — Type definition
+- `lib/api.ts` — Utility fonksiyonlar
+  - `mapListingToCardProps` — Listing verisini SaleBoatCard props formatına dönüştürür (2025-11-29)
+
+**Context Güncellemeleri:**
+- `contexts/AppStateContext.jsx` — Health endpoint 404 hatası düzeltmesi (2025-11-28)
+  - `useAppState`, `AppStateProvider`, `useStore` — State management hooks
+
+**Kullanım:**
+```tsx
+// Auth context kullanımı
+import { useAuth } from '@/contexts/AuthContext';
+
+const { user, isAuthenticated, login, logout } = useAuth();
+
+// Auth korumalı sayfa
+import { useRequireAuth } from '@/hooks/useRequireAuth';
+
+export default function ProtectedPage() {
+  useRequireAuth(); // Giriş yapmamışsa yönlendirir
+  // ...
+}
+```
+
+**Güncelleme (2025-12-03):**
+- `lib/api.ts` dosyasındaki `request` fonksiyonuna `credentials: "include"` eklendi
+- Bu sayede tüm API isteklerinde cookie'ler otomatik olarak gönderilir
+- 401 Unauthorized hatalarının önlenmesi için kritik bir düzeltmedir
+
+---
+
 ## 12) Kısa Yol Haritası (2 Hafta)
 - **Hafta 1:** Role modeli (V2: admin, partner, member, integration), `UserRole` OneToOne bağı, `seller` grubu, JWT login (cookie), CORS ayarları.  
 - **Hafta 2:** `/login` & `/register`, korumalı `/profil` (tek panel, koşullu sekmeler), Light tema minör düzeltmeler.  
 - **Riskler:** Cookie/CORS, form doğrulama; **2 gün tampon** ayrıldı.
 
-**Panel/URL Yapısı (RBAC V2):**
+**Panel/URL Yapısı (RBAC V2.1 - Güncel 2025-12-03):**
 ```
 / (public)
 ├─ login
 ├─ register
 └─ profil                [auth, tek panel — noindex]
    ├─ rezervasyonlar     [auth]
-   ├─ ilanlar            [in_group('seller')]
+   ├─ ilanlar            [auth]  # RBAC V2.1: artık tüm login kullanıcılar için
    ├─ hizmetler          [role=='partner']
    ├─ takvim             [role=='partner']
    ├─ odemeler           [auth]
@@ -319,24 +433,39 @@ Kategoriler (public, SEO)
 
 > **Not:** Tek panel yapısı; `/seller/*` ve `/partner/*` ayrı panelleri **yok**. Sekmeler rol/grup şartıyla görünür.
 
-**Next.js Koşullu Sekme Görünürlüğü (özet):**
+**Next.js Koşullu Sekme Görünürlüğü (RBAC V2.1 - Güncel 2025-12-03):**
 ```tsx
 // app/profil/layout.tsx (örnek, sunucu bileşeni)
 const role = session?.user?.role;          // 'partner' | 'member' | 'admin'
-const inSeller = session?.user?.groups?.includes('seller');
+const isAuthenticated = !!session?.user;   // RBAC V2.1: inSeller yerine isAuthenticated
 
 const tabs = [
   { href: '/profil/rezervasyonlar', label: 'Rezervasyonlar', show: true },
-  { href: '/profil/ilanlar',        label: 'İlanlar',        show: inSeller },
+  { href: '/profil/ilanlar',        label: 'İlanlar',        show: isAuthenticated }, // RBAC V2.1
   { href: '/profil/hizmetler',      label: 'Hizmetler',      show: role==='partner' },
   { href: '/profil/takvim',         label: 'Takvim',         show: role==='partner' },
   // ...
 ].filter(t => t.show);
 ```
 
+> **Not (2025-12-03 - RBAC V2.1):** `ProfilTabs` component'inde `inSeller: boolean` prop'u `isAuthenticated: boolean` olarak değiştirildi. "Tekne İlanlarım" ve "İlan ver" tab'ları artık tüm login kullanıcılar için görünür.
+
 ---
 
 ## 13) Değişiklik Günlüğü
+- **03.12.2025:** Profil ilanlar rota düzeltmesi: `/profil/ilanlarim` → `/profil/ilanlar` olarak güncellendi. Eski `/profil/ilanlarim` URL'si artık `/profil/ilanlar`'a redirect ediyor. `app/profil/layout.tsx` dosyasındaki navigasyon linkleri güncellendi.
+- **03.12.2025:** Cookie JWT authentication sistemi tamamlandı. `credentials: "include"` tüm API isteklerine eklendi. Profil paneli iyileştirmeleri (RBAC V2.1: isAuthenticated kullanımı).
+- **01.12.2025:** `/api/v1/listings/mine/` endpoint'inde 401 hatası düzeltildi.
+- **30.11.2025:** Listing Wizard implementasyonu tamamlandı (Step1-5). İlan CRUD işlemleri backend'e bağlandı. Email bildirimleri eklendi.
+- **29.11.2025:** İlan detay sayfası gerçek backend entegrasyonu tamamlandı. ListingGallery fullscreen slider eklendi. Favoriler sistemi implementasyonu.
+- **29.11.2025:** Profil paneli skeleton UI yapısı oluşturuldu. ProfileEditForm component'i eklendi. `/ilan-ver/satilik-tekne` sayfası auth korumasına alındı.
+- **28.11.2025:** Satılık tekneler sayfası (`/satilik-tekneler`) gerçek backend API ile çalışır hale getirildi. CategoryComingSoon component'i eklendi.
+- **28.11.2025:** Health endpoint 404 hatası düzeltildi. `api.health.ping()` fonksiyonu 404 ve diğer hata durumlarında throw etmeyecek şekilde düzenlendi. AppStateContext güncellendi.
+- **28.11.2025:** Login/Register sayfaları ve formları modernize edildi. Input, PasswordInput, Button component'leri güncellendi. Hydration mismatch hatası düzeltildi (useId kullanımı). LoginForm component kaldırıldı, sayfa içinde form implementasyonu yapıldı.
+- **27.11.2025:** Listing Wizard UI/UX iyileştirmeleri: Step 3'te "Fiyat talep üzerine" checkbox kaldırıldı, Step 4'te medya UX iyileştirmeleri (10 foto limit, drag & drop, preview grid), Step 5'te satıcı tipi label'ı "Sahibi"den "Sahibinden"e güncellendi.
+- **27.11.2025:** SiteHeader component'i RBAC V2 + Helin entegrasyonu ile güncellendi.
+- **26.11.2025:** CategoryShowcase component'inin görsel tasarımı modern standartlara göre güncellendi (slider mantığı korundu).
+- **27.11.2025:** Member login/register sayfaları ve profil paneli sekmeleri eklendi. RBAC V2 entegrasyonu tamamlandı.
 - **24.11.2025:** Yeni müşteri ilişkileri sayfaları eklendi (`/biz-kimiz`, `/destek-iletisim`, `/veri-silme-talebi`). HelinChat component'leri ve FlagIcon component'i eklendi. Global layout safe-area refactor yapıldı.
 - **07.11.2025:** Tema **Light only** olarak **kilitlendi**; Dark **V1.1 backlog**.
 - **07.11.2025:** Dokümantasyon sadeleştirildi; üretim komutları ve sağlık kontrolleri tek yerde toplandı.

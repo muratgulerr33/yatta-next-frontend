@@ -81,6 +81,7 @@ echo "$CSS_URL" && curl -I -L "http://localhost:3000$CSS_URL" | sed -n '1,12p'
 - Local'de **systemd** yok; prod'da `yatta-next.service` var.
 - Prod'da Nginx `yatta.com.tr → 127.0.0.1:3000` proxy eder (lokalde Nginx şart değil).
 - Tema kararımız **Light only**; tasarım doğrulamaları Light'a göre yapılır.
+- **Cookie JWT Authentication (2025-12-03):** Frontend'de tüm API isteklerinde `credentials: "include"` kullanılır. Bu, backend'deki Cookie JWT authentication sistemi ile uyumlu çalışır.
 
 ---
 

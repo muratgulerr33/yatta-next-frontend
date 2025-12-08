@@ -38,9 +38,13 @@ function LoginForm() {
 
     // Email validation
     if (!formData.email) {
-      newErrors.email = 'E-posta gereklidir';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Geçerli bir e-posta adresi giriniz';
+      newErrors.email = 'E-posta adresi gereklidir';
+    } else {
+      // Basit email format kontrolü
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Geçerli bir e-posta adresi girin';
+      }
     }
 
     // Password validation
@@ -90,7 +94,7 @@ function LoginForm() {
           });
         }
         if (Object.keys(newErrors).length === 0) {
-          newErrors.general = 'E-posta veya şifre hatalı.';
+          newErrors.general = 'E-posta adresi veya şifre hatalı.';
         }
         setErrors(newErrors);
       }
@@ -132,6 +136,7 @@ function LoginForm() {
             value={formData.email}
             onChange={handleChange}
             placeholder="ornek@email.com"
+            autoComplete="email"
             error={errors.email}
             required
           />

@@ -29,7 +29,7 @@ export default function ProfilPage() {
     );
   }
 
-  const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Kullanıcı';
+  const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim() || 'Belirtilmemiş';
   const location = [user.city, user.district].filter(Boolean).join(', ') || 'Belirtilmemiş';
 
   return (

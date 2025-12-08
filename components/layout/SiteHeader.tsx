@@ -21,7 +21,7 @@ export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isHiddenOnScroll, setIsHiddenOnScroll] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, logout } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -141,20 +141,47 @@ export function SiteHeader() {
 
             {/* Profil Butonu */}
             {isAuthenticated ? (
-              <Link
-                href="/profil"
-                className={iconTriggerClass}
-                aria-label="Profil sayfasına git"
-              >
-                <Image
-                  src="/icons/icon-user.svg"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
-                  aria-hidden="true"
-                />
-              </Link>
+              <>
+                {/* Mobil: Sadece profil butonu */}
+                <Link
+                  href="/profil"
+                  className={`lg:hidden ${iconTriggerClass}`}
+                  aria-label="Profil sayfasına git"
+                >
+                  <Image
+                    src="/icons/icon-user.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
+                    aria-hidden="true"
+                  />
+                </Link>
+                {/* Desktop: Profil butonu + Çıkış Yap butonu */}
+                <div className="hidden lg:flex items-center gap-3">
+                  <Link
+                    href="/profil"
+                    className={iconTriggerClass}
+                    aria-label="Profil sayfasına git"
+                  >
+                    <Image
+                      src="/icons/icon-user.svg"
+                      alt=""
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="inline-flex items-center rounded-full border border-red-200 px-3 py-1 text-xs font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition"
+                  >
+                    Çıkış Yap
+                  </button>
+                </div>
+              </>
             ) : (
               <Link
                 href="/login"
@@ -289,13 +316,16 @@ export function SiteHeader() {
                       >
                         <span className="text-lg">👤</span> Profilim
                       </Link>
-                      <Link
-                        href="/logout"
-                        className="flex items-center gap-3 p-3 rounded-xl bg-red-50 text-red-600 font-semibold hover:bg-red-600 hover:text-white transition-all"
-                        onClick={closeMobileMenu}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeMobileMenu();
+                          logout();
+                        }}
+                        className="flex items-center gap-3 p-3 rounded-xl bg-red-50 text-red-600 font-semibold hover:bg-red-600 hover:text-white transition-all w-full text-left"
                       >
                         <span className="text-lg">🚪</span> Çıkış Yap
-                      </Link>
+                      </button>
                     </>
                   ) : (
                     <>

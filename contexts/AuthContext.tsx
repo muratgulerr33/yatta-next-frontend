@@ -1,7 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getMe, logout as apiLogout, type AuthResponse } from '@/lib/api/auth';
+import { useRouter } from 'next/navigation';
+import { getMe, apiLogout, type AuthResponse } from '@/lib/api/auth';
 
 interface User {
   id: number;
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   const refreshUser = useCallback(async () => {
     try {
@@ -65,13 +67,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await apiLogout();
+      await apiLogout(); // Backend'e logout isteği gönder
     } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      setUser(null);
+      // Backend logout başarısız olsa bile local temizliği yapmaya devam et
+      console.error('logout error', error);
     }
-  }, []);
+
+    // HttpOnly olmayan yardımcı cookie'ler varsa temizle
+    document.cookie = 'yatta_access=; Max-Age=0; path=/';
+    document.cookie = 'yatta_refresh=; Max-Age=0; path=/';
+
+    // Auth state'i sıfırla
+    setUser(null);
+
+    // Ana sayfaya yönlendir
+    router.push('/');
+  }, [router]);
 
   return (
     <AuthContext.Provider

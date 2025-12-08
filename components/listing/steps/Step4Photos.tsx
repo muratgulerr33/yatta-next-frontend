@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { ListingFormValues } from "../ListingWizard";
+import type { ListingFormValues } from "@/lib/types/listings";
 
 const MAX_PHOTOS = 10;
 
@@ -26,21 +26,14 @@ export function Step4Photos({ values, onChange, onNext, onBack }: Props) {
       newUrls.set(file, URL.createObjectURL(file));
     });
 
-    // Önceki URL'leri temizle
-    const prevUrls = objectUrls;
-    prevUrls.forEach((url) => {
-      URL.revokeObjectURL(url);
-    });
-
     setObjectUrls(newUrls);
 
-    // Cleanup: component unmount olduğunda tüm URL'leri temizle
+    // Cleanup: component unmount olduğunda veya previewFiles değiştiğinde tüm URL'leri temizle
     return () => {
       newUrls.forEach((url) => {
         URL.revokeObjectURL(url);
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previewFiles]);
 
   const reorderFiles = (list: File[], startIndex: number, endIndex: number) => {
@@ -114,14 +107,19 @@ export function Step4Photos({ values, onChange, onNext, onBack }: Props) {
       {previewFiles.length > 0 && (
         <div className="mt-4 grid grid-cols-3 gap-3">
           {previewFiles.map((file, index) => {
-            const objectUrl = objectUrls.get(file) || "";
+            const objectUrl = objectUrls.get(file);
 
-            const handleDragStart = () => {
+            const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
               setDragIndex(index);
+              e.dataTransfer.effectAllowed = 'move';
             };
 
-            const handleDrop = () => {
-              if (dragIndex === null || dragIndex === index) return;
+            const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+              e.preventDefault();
+              if (dragIndex === null || dragIndex === index) {
+                setDragIndex(null);
+                return;
+              }
               const reordered = reorderFiles(previewFiles, dragIndex, index);
               setPreviewFiles(reordered);
               onChange({ photos: reordered });
@@ -130,29 +128,47 @@ export function Step4Photos({ values, onChange, onNext, onBack }: Props) {
 
             const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
               event.preventDefault();
+              event.dataTransfer.dropEffect = 'move';
+            };
+
+            const handleDragEnd = () => {
+              setDragIndex(null);
             };
 
             return (
               <div
                 key={index}
-                className="relative overflow-hidden rounded-md border border-gray-200 bg-gray-50"
+                className={`relative overflow-hidden rounded-md border-2 bg-gray-50 transition-all ${
+                  dragIndex === index
+                    ? 'border-blue-500 opacity-50 scale-95'
+                    : dragIndex !== null
+                    ? 'border-gray-300'
+                    : 'border-gray-200'
+                } ${dragIndex !== null && dragIndex !== index ? 'border-dashed border-blue-300' : ''}`}
                 draggable
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
               >
                 {/* Kapak etiketi (ilk foto) */}
                 {index === 0 && (
-                  <span className="absolute left-1 top-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  <span className="absolute left-1 top-1 z-10 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
                     Kapak
                   </span>
                 )}
 
-                <img
-                  src={objectUrl}
-                  alt={file.name}
-                  className="h-24 w-full object-cover"
-                />
+                {objectUrl ? (
+                  <img
+                    src={objectUrl}
+                    alt={file.name}
+                    className="h-24 w-full object-cover"
+                  />
+                ) : (
+                  <div className="h-24 w-full flex items-center justify-center text-xs text-gray-400">
+                    Yükleniyor...
+                  </div>
+                )}
               </div>
             );
           })}

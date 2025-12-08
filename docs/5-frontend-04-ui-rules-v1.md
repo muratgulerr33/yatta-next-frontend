@@ -8,31 +8,36 @@ Amaç: **mobil öncelikli, hızlı, okunaklı ve tutarlı** bir arayüz standart
 
 ## 1. Font Sistemi
 
-### 1.1. Ürün UI font ailesi (system font stack)
+### 1.1. Ürün UI font ailesi (Inter)
 
-Tüm arayüz (metinler, butonlar, formlar, tablo vs.) için **tek font ailesi** kullanılır:
+Tüm arayüz (metinler, butonlar, formlar, tablo vs.) için **Inter font ailesi** kullanılır:
 
 ```css
 :root {
   /* Tüm UI için ana sans-serif font ailesi */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont,
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont,
                "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
   font-family: var(--font-sans);
 }
-````
+```
 
-> Not: Bu fontlar cihazın kendi native UI fontlarıdır
-> (iOS/macOS: SF Pro, Windows: Segoe UI, Android: Roboto).
+**Inter Font Özellikleri:**
 
-**Neden?**
+* **Kaynak:** Google Fonts veya self-host edilmiş
+* **Stil:** Sans-serif, modern ve okunabilir
+* **Kullanım:** Tüm UI elemanları için birincil font
+* **Fallback:** Sistem fontları (yükleme hatası durumunda)
 
-* Harici font dosyası yok → **daha hızlı yüklenme**.
-* Kullanıcı zaten bu fontlara alışık → **güven ve okunabilirlik** yüksek.
-* Hem e-ticaret hem booking için gereken “kurumsal ama sıcak” hissi verir.
-* V1 bakımı kolay; V2’de istersek kendi brand fontumuzu ekleriz.
+**Neden Inter?**
+
+* Modern ve profesyonel görünüm
+* Mükemmel okunabilirlik (hem ekran hem baskı için optimize)
+* Geniş karakter seti desteği
+* Hem e-ticaret hem booking için gereken "kurumsal ama sıcak" hissi verir
+* V1'de tutarlı tipografi sağlar
 
 ---
 
@@ -77,9 +82,36 @@ body {
 * `min-height: 44px` (özellikle mobil için erişilebilirlik)
 * `letter-spacing: 0.02–0.04em` (özellikle tüm büyük harf kullanılıyorsa)
 
+**Button Component (V1 Modernizasyonu):**
+* Button component modernize edildi (2025-11-27)
+* Design token'lara uyumlu variant'lar (primary, secondary, outline)
+* Responsive davranış: mobilde tam genişlik, desktop'ta auto
+* Loading state ve disabled state desteği
+
+#### Form Elemanları (Input, PasswordInput)
+
+**Input Component:**
+* Modernize edildi (2025-11-27)
+* Inter font ailesi kullanır
+* Border radius: 8px (mobil için dokunma dostu)
+* Focus state: primary renk border
+* Error state: kırmızı border + helper text
+* Placeholder: gri ton (#9CA3AF)
+
+**PasswordInput Component:**
+* Input component'inin özel varyasyonu
+* Göster/gizle toggle butonu
+* Güvenlik ikonu (göz ikonu) kullanımı
+
+**Form Tutarlılık Kuralları:**
+* Tüm form elemanları aynı yükseklikte (44px min-height)
+* Label ve input arasında 8px boşluk
+* Helper text: 12–13px, gri ton
+* Error mesajları: kırmızı, 12–13px
+
 Genel kural:
-**Butonlar, formlar ve tüm UI elemanları aynı system font ailesini kullanır.**
-V1’de UI içinde ikinci bir font yoktur.
+**Butonlar, formlar ve tüm UI elemanları aynı Inter font ailesini kullanır.**
+V1'de UI içinde ikinci bir font yoktur (logo SVG'deki Manrope hariç).
 
 ---
 
@@ -132,14 +164,40 @@ Gereksiz yere `sm`, `md` gibi ek breakpoint kullanılmaz; sade tutulur.
 
 ### 2.4. Tablet kararı
 
-* Ayrı bir “tablet tasarımı” yoktur.
-* Tablet kullanıcıları, **mobil layout’un genişlemiş hâlini** görür.
+* Ayrı bir "tablet tasarımı" yoktur.
+* Tablet kullanıcıları, **mobil layout'un genişlemiş hâlini** görür.
 * Özellikle **portrait** kullanımda:
 
   * Rezervasyon formu
   * Takvim
   * Profil ekranı
     akışları test edilmelidir.
+
+### 2.5. Mobil Swipe ve Gesture Davranışları
+
+**Mobil Swipe Kuralları:**
+* ListingGallery component'inde fullscreen slider için swipe gesture'ları kullanılır
+* Yatay swipe: görsel geçişi için
+* Dikey swipe: fullscreen moddan çıkış için
+* Swipe threshold: minimum 50px hareket
+
+**MobileStickyActionBar:**
+* Mobil cihazlarda sayfa altında sabitlenmiş action bar
+* Yükseklik: 56–64px
+* Z-index: 1000 (diğer içeriklerin üstünde)
+* Desktop'ta gizlenir veya sidebar'a dönüşür
+
+### 2.6. Profil Paneli Responsive Davranışı
+
+**Mobil (0–1023px):**
+* Tab navigation: alt kısımda horizontal scroll
+* İçerik: full-width, padding 15px
+* Form'lar: tek sütun, tam genişlik
+
+**Desktop (≥1024px):**
+* Tab navigation: üst kısımda horizontal
+* İçerik: max-width 1200px, ortalanmış
+* Form'lar: iki sütun layout (mümkünse)
 
 ---
 
@@ -160,7 +218,7 @@ Header’da kullanılacak logo:
   * Ürün içinde **metin olarak değil**,
   * **SVG wordmark** olarak kullanılır.
 
-> UI genel fontu system-ui kalır, sadece logo SVG’de Manrope gömülü olur.
+> UI genel fontu Inter'dir, sadece logo SVG'de Manrope gömülü olur.
 
 ### 3.2. Boyutlar
 
@@ -277,9 +335,9 @@ export function Header() {
 
 ## 5. V2 İçin Notlar (Şimdiden Bilinsin)
 
-* **Custom brand font (örn. “Yatta Sans”)**:
+* **Custom brand font (örn. "Yatta Sans")**:
 
-  * V2’de, system font yerine self-host edilen tek bir sans-serif fonta geçiş yapılabilir.
+  * V2'de, Inter font yerine özel brand fontuna geçiş yapılabilir (şu an Inter kullanılıyor).
 * **Desktop’ta gelişmiş layout**:
 
   * Sol tarafta vertical menü + sağda içerik (split layout) düşünülebilir.
@@ -357,7 +415,147 @@ export function Header() {
 
 ---
 
+## 7. Listing Wizard (İlan Verme Formu) UI Kuralları
+
+### 7.1. Genel Yapı
+
+Listing Wizard, satılık tekne ilanı oluşturmak için 5 adımlı bir form sistemidir.
+
+**Adım Yapısı:**
+1. **Step 1: Kimlik ve Konum** - Tekne kimlik bilgileri, marka, model, konum
+2. **Step 2: Teknik Özellikler** - Boyut, kapasite, motor, yakıt tipi
+3. **Step 3: Hikaye ve Fiyat** - Açıklama, fiyat, para birimi
+4. **Step 4: Fotoğraflar** - Medya yükleme ve düzenleme
+5. **Step 5: Satıcı Bilgileri** - Satıcı tipi, iletişim bilgileri, önizleme
+
+**Stepper UI:**
+* Üst kısımda adım göstergesi (1/5, 2/5, vb.)
+* Mobil: sadece mevcut adım numarası
+* Desktop: tüm adımlar görünür, aktif adım vurgulanır
+* Geri/İleri butonları: alt kısımda sabit
+
+### 7.2. Form Alanları Düzeni
+
+**Genel Kurallar:**
+* Her adımda maksimum 8–10 form alanı
+* Label'lar: 14px, font-weight 600, gri ton
+* Input yüksekliği: 44px (mobil erişilebilirlik)
+* Alanlar arası boşluk: 20–24px
+
+**Step 1 (Kimlik ve Konum):**
+* Marka, model, yapım yılı: üst sıra
+* İl, ilçe: alt sıra (dropdown'lar)
+* Bayrağı (kayıt ülkesi): dropdown, varsayılan "Türkiye"
+
+**Step 2 (Teknik Özellikler):**
+* Boyut bilgileri: uzunluk, genişlik (metre cinsinden)
+* Kapasite: kişi sayısı, kabin sayısı
+* Motor: motor adedi, yakıt tipi
+* Giriş alanları: number input'lar
+
+**Step 3 (Hikaye ve Fiyat):**
+* Açıklama: textarea, minimum 100 karakter
+* Fiyat: number input, para birimi seçici (TRY/USD/EUR)
+* **Not:** "Fiyat talep üzerine" checkbox kaldırıldı (2025-11-27)
+
+**Step 4 (Fotoğraflar):**
+* Maksimum 10 fotoğraf
+* Drag & drop ile sıralama
+* İlk fotoğraf otomatik "Kapak" olarak işaretlenir
+* Fotoğraf önizleme: grid layout, 3 sütun (mobil: 2 sütun)
+* Silme butonu: her fotoğrafın üst sağ köşesinde
+
+**Step 5 (Satıcı Bilgileri):**
+* Satıcı tipi: "Sahibinden" / "Emlakçıdan" / "Broker" (dropdown)
+* İletişim telefonu: text input, validasyon (min 7–8 karakter)
+* Önizleme: form verilerinin özeti
+
+### 7.3. Validasyon ve Hata Mesajları
+
+**Validasyon Kuralları:**
+* Zorunlu alanlar: kırmızı asterisk (*) ile işaretlenir
+* Hata mesajları: input'un altında, kırmızı renk, 12px
+* Form gönderimi: tüm zorunlu alanlar dolu olmalı
+
+**Görsel Geri Bildirim:**
+* Başarılı kayıt: yeşil toast mesajı
+* Hata durumu: kırmızı toast mesajı + form alanlarında hata işaretleme
+* Loading state: butonlarda spinner, form alanları disabled
+
+---
+
+## 8. Yeni Component'ler ve UI Standartları
+
+### 8.1. SaleBoatCard Component Kuralları
+
+**Kullanım:**
+* Satılık tekneler liste sayfasında (`/satilik-tekneler`)
+* Design token'lara uyumlu
+* Responsive: mobilde tek sütun, desktop'ta grid
+
+**Tasarım Özellikleri:**
+* Kart yüksekliği: otomatik (içerik bazlı)
+* Border radius: 12px
+* Shadow: hafif gölge (hover'da artar)
+* Kapak fotoğrafı: aspect ratio 16:9, object-fit cover
+
+**İçerik Düzeni:**
+* Üst: kapak fotoğrafı
+* Orta: başlık (H3), konum, teknik özellikler
+* Alt: fiyat (sağda), "İncele" butonu (solda)
+* Favori butonu: sağ üst köşe (kalp ikonu)
+
+**Responsive Davranış:**
+* Mobil: tam genişlik, dikey layout
+* Desktop: grid layout, 2–3 sütun
+* Hover: kart yükselir (transform: translateY(-2px))
+
+### 8.2. ListingGallery Component Kuralları
+
+**Fullscreen Slider:**
+* Tıklama ile fullscreen moda geçiş
+* Ok butonları: sağ/sol, yuvarlak, yarı saydam arka plan
+* Klavye navigasyonu: ← → ok tuşları
+* ESC tuşu: fullscreen'den çıkış
+
+**Mobil Swipe İyileştirmeleri:**
+* Yatay swipe: görsel geçişi (minimum 50px hareket)
+* Dikey swipe: fullscreen'den çıkış
+* Swipe animasyonu: smooth transition (300ms)
+
+**Görsel Geçiş Animasyonları:**
+* Fade transition: 300ms ease-in-out
+* Thumbnail navigation: alt kısımda, scrollable
+* Aktif thumbnail: border ile vurgulanır
+
+### 8.3. CategoryComingSoon Component Kuralları
+
+**Kullanım:**
+* Kategori sayfalarında henüz içerik yoksa gösterilir
+* Reusable component: turlar, kiralama, konaklama, organizasyon için
+
+**Tasarım:**
+* Merkezi layout
+* İkon veya görsel: üst kısım
+* "Yakında" başlığı: H2, 24–28px
+* Açıklama metni: 16px, gri ton, ortalanmış
+* CTA butonu: "Ana Sayfaya Dön" (opsiyonel)
+
+**Responsive:**
+* Mobil: padding 20px
+* Desktop: padding 40px, max-width 600px, ortalanmış
+
+### 8.4. CategoryShowcase Component Kuralları
+
+**Görsel Tasarım Güncellemesi (2025-11-26):**
+* Kartlar: modern standartlara göre güncellendi
+* Slider mantığı korundu
+* Hover efektleri: kart yükselme animasyonu
+* Border radius: 12px
+
+---
+
 Bu doküman, **YATTA V1** tasarım kararlarının referansıdır.
 Yeni ekranlar tasarlanırken ve komponent kütüphanesi oluşturulurken bu kurallara uyulmalıdır.
 
-**Son Güncelleme:** 24 Kasım 2025 — Global layout safe-area ve padding değişiklikleri eklendi
+**Son Güncelleme:** 3 Aralık 2025 — UI Rules dokümantasyonu 7days-develop.md5 dosyasındaki UI/UX değişiklikleri ile güncellendi. Listing Wizard, yeni component'ler, form modernizasyonu ve responsive iyileştirmeleri eklendi.

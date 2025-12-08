@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { ListingFormValues } from "../ListingWizard";
+import type { ListingFormValues } from "@/lib/types/listings";
 
 type Props = {
   values: ListingFormValues;
@@ -94,6 +94,26 @@ export function Step2Technical({ values, onChange, onNext, onBack }: Props) {
             <option value={2}>Çift motor</option>
           </select>
         </div>
+      </div>
+
+      {/* Motor bilgisi */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-gray-800">Motor bilgisi</label>
+        <textarea
+          className="w-full rounded-lg border border-gray-300 p-2 text-sm"
+          value={values.engine_info_note ?? ""}
+          onChange={(e) =>
+            onChange({
+              engine_info_note: e.target.value || null,
+            })
+          }
+          placeholder="Örn: Twin diesel engines, 500 HP each"
+          rows={3}
+          maxLength={300}
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          {values.engine_info_note?.length || 0} / 300 karakter
+        </p>
       </div>
 
       {/* Yakıt tipi, Gövde tipi */}

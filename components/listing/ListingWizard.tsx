@@ -1,46 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createListing, ListingCreatePayload, Currency } from "@/lib/api/listings";
+import { useToast } from "@/lib/hooks/use-toast";
+import { getCountryCode } from "@/lib/utils/country-mapping";
+import { ListingFormValues, mapFormValuesToUpdatePayload } from "@/lib/types/listings";
 import { Step1IdentityLocation } from "./steps/Step1IdentityLocation";
 import { Step2Technical } from "./steps/Step2Technical";
 import { Step3StoryPrice } from "./steps/Step3StoryPrice";
 import { Step4Photos } from "./steps/Step4Photos";
 import { Step5SellerReview } from "./steps/Step5SellerReview";
-
-export type ListingFormValues = {
-  // Adım 1 – Kimlik & Konum
-  boat_type: string;
-  brand_name: string;
-  model_name: string;
-  year_built: number | null;
-  location_province: string;
-  location_district: string;
-
-  // Adım 2 – Teknik
-  length_m: number | null;
-  beam_m: number | null;
-  capacity_people: number | null;
-  cabin_count: number | null;
-  engine_count: number | null;
-  fuel_type: string;
-  hull_type: string;
-  license_type: string;
-  country_of_registry: string;
-
-  // Adım 3 – Hikaye & Fiyat
-  title: string;
-  description: string;
-  price_on_request: boolean;
-  price: number | null;
-  currency: "TRY" | "USD" | "EUR";
-
-  // Adım 4 – Fotoğraflar (şimdilik sadece client-side placeholder)
-  photos: File[];
-
-  // Adım 5 – Satıcı
-  seller_type: "owner" | "realtor" | "broker" | "other";
-  contact_phone: string;
-};
 
 type StepId =
   | "identity"
@@ -95,6 +65,7 @@ const DEFAULT_VALUES: ListingFormValues = {
   capacity_people: null,
   cabin_count: null,
   engine_count: 1,
+  engine_info_note: null,
   fuel_type: "dizel",
   hull_type: "",
   license_type: "özel",
@@ -112,6 +83,9 @@ const DEFAULT_VALUES: ListingFormValues = {
 export function ListingWizard() {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [values, setValues] = useState<ListingFormValues>(DEFAULT_VALUES);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
   const currentStep = STEPS[currentStepIndex];
 
   const isFirstStep = currentStepIndex === 0;
@@ -134,10 +108,52 @@ export function ListingWizard() {
   }
 
   async function handleSubmitFinal() {
-    // TODO: Burada backend entegrasyonu yapılacak:
-    // POST http://127.0.0.1:8000/api/v1/listings/
-    console.log("FINAL FORM VALUES", values);
-    alert("V1: Form değerleri console'da. Backend entegrasyonu bir sonraki adımda.");
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      // Mapper fonksiyonunu kullan, ancak create için gerekli ek alanları ekle
+      const basePayload = mapFormValuesToUpdatePayload(values);
+      const payload: ListingCreatePayload = {
+        ...basePayload,
+        category_key: 'satilik-tekneler',
+        category_label: 'Satılık tekneler',
+        country_code: 'TR',
+        country_of_registry: getCountryCode(values.country_of_registry) || 'TR',
+        // Create için zorunlu alanlar - mapper undefined döndürebilir
+        year_built: basePayload.year_built ?? Number(values.year_built),
+        length_m: basePayload.length_m ?? Number(values.length_m),
+        capacity_people: basePayload.capacity_people ?? Number(values.capacity_people),
+        cabin_count: basePayload.cabin_count ?? Number(values.cabin_count),
+        engine_count: basePayload.engine_count ?? Number(values.engine_count),
+      } as ListingCreatePayload;
+
+      await createListing(payload);
+
+      toast({
+        title: 'İlanınız kaydedildi',
+        description: 'İlanınız incelenmek üzere kaydedildi. Onay sonrası yayına alınacak. E-posta adresinize bilgilendirme maili gönderilmiştir.',
+        variant: 'success',
+      });
+
+      // Kısa gecikmeyle ilanlar sayfasına git
+      setTimeout(() => {
+        router.push('/profil/ilanlar');
+      }, 1000);
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.detail ??
+        error?.response?.data?.non_field_errors?.[0] ??
+        error?.message ??
+        'İlan kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.';
+      toast({
+        title: 'Hata',
+        description: message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function renderStep() {
@@ -184,6 +200,7 @@ export function ListingWizard() {
             onChange={updateValues}
             onBack={goPrevStep}
             onSubmit={handleSubmitFinal}
+            isSubmitting={isSubmitting}
           />
         );
       default:

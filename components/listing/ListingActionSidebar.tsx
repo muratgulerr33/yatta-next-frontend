@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { addFavorite, removeFavorite, fetchFavorites } from '@/lib/api/favorites';
+import { addFavorite, removeFavorite, getFavorites } from '@/lib/api/favorites';
 import { Heart } from 'lucide-react';
 import type { ListingDetail } from '@/lib/api';
 
@@ -26,7 +26,7 @@ export default function ListingActionSidebar({ listing }: ListingActionSidebarPr
 
   const checkFavoriteStatus = async () => {
     try {
-      const favorites = await fetchFavorites();
+      const favorites = await getFavorites();
       const favorite = favorites.find((fav) => fav.listing.id === listing.id);
       if (favorite) {
         setIsFavorite(true);

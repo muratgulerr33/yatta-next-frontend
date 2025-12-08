@@ -37,7 +37,7 @@ const profileNavItems: ProfileNavItem[] = [
   {
     key: "ilanlarim",
     label: "İlanlarım",
-    href: "/profil/ilanlarim",
+    href: "/profil/ilanlar",
     icon: ListChecks,
   },
   {

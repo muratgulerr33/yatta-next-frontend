@@ -23,10 +23,36 @@ export default function ProfileEditForm({ onCancel }: ProfileEditFormProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+
+  const validatePhone = (phone: string): string | null => {
+    if (!phone || phone.trim().length === 0) {
+      return null; // Telefon opsiyonel olabilir
+    }
+    
+    // Sadece rakam, +, -, (, ), boşluk karakterlerine izin ver
+    const phoneRegex = /^[\d\s\+\-\(\)]+$/;
+    if (!phoneRegex.test(phone)) {
+      return 'Telefon numarası sadece rakam, +, -, (, ) ve boşluk karakterleri içerebilir';
+    }
+    
+    // Sadece rakam ve + karakterlerini sayarak min uzunluk kontrolü
+    const digitsOnly = phone.replace(/[\s\+\-\(\)]/g, '');
+    if (digitsOnly.length < 7) {
+      return 'Telefon numarası en az 7 rakam içermelidir';
+    }
+    
+    return null;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Telefon validasyonu
+    if (name === 'phone') {
+      setPhoneError(validatePhone(value));
+    }
   };
 
   const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -42,6 +68,14 @@ export default function ProfileEditForm({ onCancel }: ProfileEditFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Telefon validasyonu
+    const phoneValidationError = validatePhone(formData.phone);
+    if (phoneValidationError) {
+      setPhoneError(phoneValidationError);
+      return;
+    }
+    
     setIsSubmitting(true);
     setError(null);
 
@@ -115,14 +149,27 @@ export default function ProfileEditForm({ onCancel }: ProfileEditFormProps) {
         helperText="E-posta adresi değiştirilemez"
       />
 
-      <Input
-        label="Telefon"
-        name="phone"
-        type="tel"
-        value={formData.phone}
-        onChange={handleChange}
-        placeholder="+90 5XX XXX XX XX"
-      />
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-[var(--color-text-primary)]">
+          Telefon
+        </label>
+        <input
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="Örn: +90 555 123 45 67"
+          className={`w-full rounded-lg border px-3 py-2 text-sm text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] ${
+            phoneError ? 'border-red-300' : 'border-[var(--color-border)]'
+          }`}
+        />
+        {phoneError && (
+          <p className="text-xs text-red-500 mt-1">{phoneError}</p>
+        )}
+        <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+          Format serbest, minimum 7 rakam (opsiyonel)
+        </p>
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-1">

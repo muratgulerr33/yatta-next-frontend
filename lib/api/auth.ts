@@ -1,11 +1,10 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.yatta.com.tr';
+import { request } from '@/lib/api';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
 
 export interface RegisterData {
   email: string;
   password: string;
-  phone?: string;
-  city?: string;
-  district?: string;
 }
 
 export interface LoginData {
@@ -39,7 +38,11 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
         'Content-Type': 'application/json',
       },
       credentials: 'include', // Cookie'leri gönder
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        username: data.email,  // Backend username = email bekliyor
+        email: data.email,      // Email alanını da gönder
+        password: data.password,
+      }),
     });
 
     const result = await response.json();
@@ -69,7 +72,10 @@ export async function login(data: LoginData): Promise<AuthResponse> {
         'Content-Type': 'application/json',
       },
       credentials: 'include', // Cookie'leri gönder
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        username: data.email,  // Backend username = email bekliyor
+        password: data.password,
+      }),
     });
 
     const result = await response.json();
@@ -120,17 +126,10 @@ export async function getMe(): Promise<AuthResponse> {
   }
 }
 
-export async function logout(): Promise<void> {
-  try {
-    await fetch(`${API_BASE_URL}/api/v1/accounts/logout/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    });
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
+export async function apiLogout(): Promise<void> {
+  await request('/api/v1/accounts/logout/', {
+    method: 'POST',
+    credentials: 'include',
+  });
 }
 

@@ -7,13 +7,29 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
 /* -------------------------------------------------------
+   ApiError Class
+------------------------------------------------------- */
+export class ApiError extends Error {
+  status: number;
+  data: unknown;
+
+  constructor(message: string, status: number, data: unknown) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.data = data;
+  }
+}
+
+/* -------------------------------------------------------
    Request Helper
 ------------------------------------------------------- */
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
 
   const res = await fetch(url, {
     ...init,
+    credentials: init.credentials ?? "include",
     headers: {
       "Content-Type": "application/json",
       ...(init.headers || {}),
@@ -22,10 +38,42 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   });
 
   if (!res.ok) {
-    throw new Error(`Request failed: ${res.status} ${res.statusText}`);
+    let errorData: unknown = null;
+    let errorMessage = `Request failed: ${res.status} ${res.statusText}`;
+
+    try {
+      errorData = await res.json();
+      if (typeof errorData === "string") {
+        errorMessage = errorData;
+      } else if (
+        errorData &&
+        typeof errorData === "object" &&
+        "detail" in (errorData as any)
+      ) {
+        errorMessage = (errorData as any).detail;
+      } else {
+        errorMessage = JSON.stringify(errorData);
+      }
+    } catch {
+      // body parse edilemezse default mesajı kullan
+    }
+
+    throw new ApiError(errorMessage, res.status, errorData);
   }
 
-  return (await res.json()) as T;
+  // 204 No Content veya 205 Reset Content durumlarında body yok
+  if (res.status === 204 || res.status === 205) {
+    return undefined as T;
+  }
+
+  // Content-Type kontrolü ile güvenli JSON parse
+  const contentType = res.headers.get("content-type");
+  if (contentType?.includes("application/json")) {
+    return (await res.json()) as T;
+  }
+
+  // JSON değilse text olarak döndür (veya undefined)
+  return undefined as T;
 }
 
 /* -------------------------------------------------------
@@ -52,6 +100,7 @@ export interface ListingSummary {
   length_overall?: number | null;
   cabins?: number | null;
   is_favorite?: boolean;
+  media?: ListingMedia[];
 }
 
 export interface ListingDetail {
@@ -114,14 +163,25 @@ export interface PaginatedResponse<T> {
 ------------------------------------------------------- */
 export async function fetchSaleListings(): Promise<ListingSummary[]> {
   const data = await request<PaginatedResponse<any>>(
-    `/api/v1/listings/?category=sale&status=published`
+    `/api/v1/listings/?category_key=satilik-tekneler`
   );
 
   return data.results.map((item) => {
     // cover_image_url için media array'inden is_cover olanı veya ilkini bul
     let cover_image_url: string | null = null;
+    let media: ListingMedia[] | undefined = undefined;
+    
     if (item.media && Array.isArray(item.media) && item.media.length > 0) {
-      const coverMedia = item.media.find((m: any) => m.is_cover === true) || item.media[0];
+      // Media array'ini ListingMedia formatına dönüştür
+      media = item.media.map((m: any) => ({
+        id: m.id || 0,
+        image: m.image || '',
+        position: m.position,
+        order: m.order ?? m.position ?? 0,
+        is_cover: m.is_cover || false,
+      }));
+      
+      const coverMedia = media.find((m) => m.is_cover === true) || media[0];
       cover_image_url = coverMedia?.image || null;
     } else if (item.cover_image_url) {
       cover_image_url = item.cover_image_url;
@@ -152,6 +212,7 @@ export async function fetchSaleListings(): Promise<ListingSummary[]> {
       cabins: item.cabins || item.cabin_count || null,
       cover_image_url,
       is_favorite: item.is_favorite || false,
+      media,
     };
   });
 }
@@ -253,3 +314,8 @@ export const api = {
     },
   },
 };
+
+/* -------------------------------------------------------
+   Re-exports
+------------------------------------------------------- */
+export * from "./api/favorites";

@@ -112,6 +112,65 @@ curl -s https://api.yatta.com.tr/health/ping
 
 **Beklenen →** `{ "status": "healthy" }`.
 
+**Not (2025-11-28):** Health endpoint 404 hatası düzeltildi. Frontend'de `api.health.ping()` fonksiyonu 404 ve diğer hata durumlarında throw etmeyecek şekilde düzenlendi.
+
+**Not (2025-12-03):** Frontend Cookie Credentials Fix uygulandı. Tüm API isteklerinde `credentials: "include"` kullanılıyor. Bu sayede 401 Unauthorized hataları önleniyor.
+
+---
+
+## Port 8000 Güvenlik Kontrolü (Güncel 2025-11-30)
+
+**Amaç →** Backend port 8000'in güvenlik durumunu kontrol etmek.
+
+**Script Dosyası:**
+- `8000-port-guvenlik-kontrol.sh` — Port 8000 güvenlik kontrol script'i
+
+**Dokümantasyon:**
+- `8000-PORT-KAPSAMLI-DOKUMANTASYON.md` — Port 8000 kapsamlı dokümantasyonu
+- `8000-port-durum-raporu.md` — Port 8000 durum raporu
+
+**Kullanım:**
+```bash
+# Port 8000 güvenlik kontrol script'ini çalıştır
+./8000-port-guvenlik-kontrol.sh
+```
+
+**Kontrol Edilenler:**
+- Port 8000'in açık/kapalı durumu
+- Firewall kuralları
+- Nginx proxy yapılandırması
+- Güvenlik açıkları
+
+---
+
+## Satılık Tekne Favorileme Akışı
+
+**Amaç →** Satılık tekneler sayfasında favori ekleme/çıkarma işlemlerinin yüksek seviye akışını özetlemek.
+
+**Akış Özeti:**
+
+1. **Login Kontrolü:**
+   - Guest kullanıcılar için favori API çağrısı yapılmaz
+   - Kalbe tıklayınca login sayfasına yönlendirme yapılır
+
+2. **`/favorites/` GET/POST Kullanımı:**
+   - Authenticated kullanıcılar için favori yönetimi
+   - `GET /api/v1/favorites/` → Kullanıcının favorilerini listeler (paginated response)
+   - `POST /api/v1/favorites/` → Idempotent favori ekleme (201 Created veya 200 OK)
+   - `DELETE /api/v1/favorites/{id}/` → Favoriden çıkarma (204 No Content)
+
+3. **`favoritesMap` ile Kalp İkonlarının Kontrolü:**
+   - Listing ID → Favorite ID eşlemesi (`Map<number, number>`)
+   - Her kart için favori durumu O(1) karmaşıklığında kontrol edilir
+   - Kalp ikonu kırmızı/beyaz durumuna bu map üzerinden karar verir
+
+4. **Profil > Favoriler Sayfası ile Senkron Ekran Davranışı:**
+   - Çift yönlü senkronizasyon: Listeleme sayfası ↔ Profil > Favoriler
+   - Her iki sayfa da aynı `getFavorites()` helper'ını kullanır
+   - Bir sayfada yapılan değişiklik diğerine yansır
+
+> **Detaylı Teknik Dokümantasyon:** `13-frontend-06-favorites-sync-v1.md` dosyasına bakın.
+
 ---
 
 ## EK: URL Yapımız (Kasım 2025)

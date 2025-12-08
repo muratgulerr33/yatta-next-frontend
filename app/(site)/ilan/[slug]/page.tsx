@@ -16,6 +16,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchListing, type ListingDetail } from "@/lib/api";
 import { getMediaUrl } from "@/lib/media";
+import { getCountryName } from "@/lib/utils/country-mapping";
 import ListingGallery from "@/components/listing/ListingGallery";
 import ListingActionSidebar from "@/components/listing/ListingActionSidebar";
 import MobileStickyActionBar from "@/components/listing/MobileStickyActionBar";
@@ -27,37 +28,54 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const listing = await fetchListing(slug);
+  
+  try {
+    const listing = await fetchListing(slug);
 
-  if (!listing) {
+    if (!listing) {
+      return {
+        title: "İlan Bulunamadı | YATTA",
+        description: "Aradığınız ilan bulunamadı.",
+      };
+    }
+
+    const description = listing.description
+      ? listing.description.slice(0, 160)
+      : `${listing.title} - YATTA'da satılık tekne/yat ilanı`;
+
+    const coverImage = listing.media.find((m) => m.is_cover) || listing.media[0];
+    const imageUrl = coverImage ? getMediaUrl(coverImage.image) : undefined;
+
     return {
-      title: "İlan Bulunamadı | YATTA",
-      description: "Aradığınız ilan bulunamadı.",
-    };
-  }
-
-  const description = listing.description
-    ? listing.description.slice(0, 160)
-    : `${listing.title} - YATTA'da satılık tekne/yat ilanı`;
-
-  const coverImage = listing.media.find((m) => m.is_cover) || listing.media[0];
-  const imageUrl = coverImage ? getMediaUrl(coverImage.image) : undefined;
-
-  return {
-    title: `${listing.title} | YATTA`,
-    description,
-    alternates: {
-      canonical: `https://yatta.com.tr/ilan/${listing.slug}`,
-    },
-    openGraph: {
       title: `${listing.title} | YATTA`,
       description,
-      url: `https://yatta.com.tr/ilan/${listing.slug}`,
-      images: imageUrl ? [{ url: imageUrl }] : [],
-      siteName: "YATTA",
-      type: "website",
-    },
-  };
+      alternates: {
+        canonical: `https://yatta.com.tr/ilan/${listing.slug}`,
+      },
+      openGraph: {
+        title: `${listing.title} | YATTA`,
+        description,
+        url: `https://yatta.com.tr/ilan/${listing.slug}`,
+        images: imageUrl ? [{ url: imageUrl }] : [],
+        siteName: "YATTA",
+        type: "website",
+      },
+    };
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.startsWith("Request failed: 404")
+    ) {
+      // 404 için anlamlı metadata döndür
+      return {
+        title: "İlan Bulunamadı | YATTA",
+        description: "Aradığınız ilan bulunamadı.",
+      };
+    }
+
+    // Diğer hatalar global error boundary'e gitsin
+    throw error;
+  }
 }
 
 // Component Definitions
@@ -243,7 +261,7 @@ function SpecsSection({ listing }: { listing: ListingDetail }) {
   }
 
   if (listing.engine_info_note) {
-    specs.push({ label: "Motor Bilgisi", value: listing.engine_info_note });
+    specs.push({ label: "Motor bilgisi", value: listing.engine_info_note });
   }
 
   if (listing.hull_type) {
@@ -256,8 +274,8 @@ function SpecsSection({ listing }: { listing: ListingDetail }) {
 
   if (listing.country_of_registry) {
     specs.push({
-      label: "Kayıt Ülkesi",
-      value: listing.country_of_registry,
+      label: "Bayrağı",
+      value: getCountryName(listing.country_of_registry),
     });
   }
 
@@ -378,15 +396,21 @@ function SellerProfileCard({ listing }: { listing: ListingDetail }) {
 
 export default async function ListingDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { slug } = await params;
-  const listing = await fetchListing(slug);
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const isFromProfile = resolvedSearchParams?.from === "profil";
+  
+  try {
+    const listing = await fetchListing(slug);
 
-  if (!listing) {
-    notFound();
-  }
+    if (!listing) {
+      notFound();
+    }
 
   // Media'yı sırala: is_cover önce, sonra order'a göre
   const sortedMedia = [...listing.media].sort((a, b) => {
@@ -431,6 +455,16 @@ export default async function ListingDetailPage({
   return (
     <div className="min-h-screen bg-[color:var(--color-bg-primary)] pb-24 lg:pb-12">
       <div className="page-shell py-4 sm:pt-6">
+        {isFromProfile && (
+          <div className="mb-4">
+            <Link
+              href="/profil/ilanlar"
+              className="inline-flex items-center text-sm text-[color:var(--color-primary)] hover:underline"
+            >
+              ← İlanlarıma geri dön
+            </Link>
+          </div>
+        )}
         <BreadcrumbNav listing={listing} />
 
         <main className="mt-6 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 lg:gap-8">
@@ -464,5 +498,17 @@ export default async function ListingDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
     </div>
-  );
+    );
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.startsWith("Request failed: 404")
+    ) {
+      // Kayıt yok → 404 sayfasına yönlendir
+      notFound();
+    }
+
+    // Diğer hatalar için mevcut error flow kalsın
+    throw error;
+  }
 }
