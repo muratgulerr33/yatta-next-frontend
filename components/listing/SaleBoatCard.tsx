@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 // TODO: lucide-react paketi package.json'a eklenmelidir
 // Kurulum: npm install lucide-react
 import { Heart, Ruler, Anchor, BedDouble, MapPin } from "lucide-react";
@@ -26,6 +26,7 @@ export interface SaleBoatCardProps {
   images: string[];
   isFavorite?: boolean;
   favoriteId?: number;
+  position?: number;
   onRemoveFavorite?: () => void;
   onFavoriteChange?: (
     listingId: number,
@@ -35,18 +36,19 @@ export interface SaleBoatCardProps {
 }
 
 export default function SaleBoatCard({ data }: { data: SaleBoatCardProps }) {
-  const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuth();
   const { toast } = useToast();
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
 
   // Favori state yönetimi
   const [favoriteId, setFavoriteId] = useState<number | null>(data.favoriteId ?? null);
   const [isFavorite, setIsFavorite] = useState<boolean>(data.isFavorite ?? false);
   const [isFavLoading, setIsFavLoading] = useState<boolean>(false);
+
+  const coverImage = data.images?.[0];
+  const extraImageCount = Math.max(0, (data.images?.length || 0) - 1);
+  const isLcpImage = (data.position ?? 0) === 0;
 
   // Parent'tan gelen prop değişikliklerini dinle ve local state'i senkronize et
   useEffect(() => {
@@ -60,30 +62,6 @@ export default function SaleBoatCard({ data }: { data: SaleBoatCardProps }) {
       currency,
       maximumFractionDigits: 0,
     }).format(price);
-  };
-
-  const handleNext = () => {
-    if (!data.images?.length) return;
-    setCurrentImgIndex((prev) => (prev + 1) % data.images.length);
-  };
-
-  const handlePrev = () => {
-    if (!data.images?.length) return;
-    setCurrentImgIndex((prev) =>
-      prev === 0 ? data.images.length - 1 : prev - 1,
-    );
-  };
-
-  const handlePrevImage = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handlePrev();
-  };
-
-  const handleNextImage = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleNext();
   };
 
   const handleFavoriteClick = async (
@@ -174,51 +152,10 @@ export default function SaleBoatCard({ data }: { data: SaleBoatCardProps }) {
     router.push(`/ilan/${data.slug}`);
   };
 
-  const handleDotClick = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    index: number
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImgIndex(index);
-  };
-
   const handleInspectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     router.push(`/ilan/${data.slug}`);
   };
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    touchStartX.current = e.touches[0]?.clientX ?? null;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    touchEndX.current = e.touches[0]?.clientX ?? null;
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStartX.current === null || touchEndX.current === null) {
-      touchStartX.current = null;
-      touchEndX.current = null;
-      return;
-    }
-
-    const deltaX = touchEndX.current - touchStartX.current;
-    const threshold = 40; // minimum swipe mesafesi (px)
-
-    if (deltaX > threshold) {
-      // sağa kaydırma → önceki foto
-      handlePrev();
-    } else if (deltaX < -threshold) {
-      // sola kaydırma → sonraki foto
-      handleNext();
-    }
-
-    touchStartX.current = null;
-    touchEndX.current = null;
-  };
-
-  const hasMultipleImages = data.images.length > 1;
 
   return (
     <div
@@ -226,62 +163,24 @@ export default function SaleBoatCard({ data }: { data: SaleBoatCardProps }) {
       className="group relative flex flex-col w-full bg-white border border-[var(--color-border)] rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
     >
       {/* Görsel Alanı */}
-      <div
-        className="relative aspect-[4/3] overflow-hidden rounded-2xl"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {data.images[currentImgIndex] && (
-          <Image
-            src={data.images[currentImgIndex]}
-            alt={data.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority={currentImgIndex === 0}
-          />
-        )}
-
-        {/* Navigasyon Okları */}
-        {hasMultipleImages && (
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+        {coverImage && (
           <>
-            <button
-              type="button"
-              onClick={handlePrevImage}
-              aria-label="Önceki fotoğraf"
-              className="absolute left-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white text-xs shadow hover:bg-black/70"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={handleNextImage}
-              aria-label="Sonraki fotoğraf"
-              className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white text-xs shadow hover:bg-black/70"
-            >
-              ›
-            </button>
+            <Image
+              src={coverImage}
+              alt={data.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              priority={isLcpImage}
+              fetchPriority={isLcpImage ? "high" : "auto"}
+            />
+            {extraImageCount > 0 && (
+              <span className="absolute right-3 top-3 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white">
+                +{extraImageCount} foto
+              </span>
+            )}
           </>
-        )}
-
-        {/* Dots (Görsel Sayacı) */}
-        {hasMultipleImages && (
-          <div className="absolute inset-x-0 bottom-2 flex justify-center gap-1 z-20">
-            {data.images.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={(e) => handleDotClick(e, index)}
-                className={`h-1.5 w-1.5 rounded-full transition-all duration-200 ${
-                  index === currentImgIndex
-                    ? "bg-white"
-                    : "bg-white/40"
-                }`}
-                aria-label={`Fotoğraf ${index + 1}`}
-              />
-            ))}
-          </div>
         )}
 
         {/* Favori Butonu */}

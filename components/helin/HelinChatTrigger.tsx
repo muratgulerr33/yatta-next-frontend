@@ -2,15 +2,16 @@ interface HelinChatTriggerProps {
   onClick: () => void;
   isOpen: boolean;
   hasUnread: boolean;
+  hideOnMobile?: boolean;
 }
 
-export function HelinChatTrigger({ onClick, isOpen, hasUnread }: HelinChatTriggerProps) {
+export function HelinChatTrigger({ onClick, isOpen, hasUnread, hideOnMobile = false }: HelinChatTriggerProps) {
   return (
     <button
       onClick={onClick}
       className={`fixed bottom-6 right-6 z-50 p-0 w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 ${
         isOpen ? 'bg-slate-800 rotate-90' : 'bg-[#004aad]'
-      }`}
+      } ${hideOnMobile ? 'md:block hidden' : ''}`}
       aria-label={isOpen ? 'Chati kapat' : 'Chati aç'}
     >
       {/* Icon Container */}

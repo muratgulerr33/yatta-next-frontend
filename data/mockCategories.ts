@@ -3,7 +3,7 @@ export const MOCK_CATEGORIES = [
     id: '5',
     title: 'Satılık Tekneler',
     image: '/media/categories/satilik-tekneler.webp',
-    link: '/satilik',
+    link: '/satilik-tekneler',
     description: 'Hayalinizdeki tekne',
   },
   {

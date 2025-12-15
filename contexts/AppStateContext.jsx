@@ -27,19 +27,18 @@ export function AppStateProvider({ children }) {
   const checkBackendHealth = async () => {
     setLoading(true)
     setError(null)
-    
-    // Artık throw etmeyeceği için try-catch gereksiz
+
     const response = await api.health.ping()
-    
-    if (response.status === 200) {
+
+    if (response?.status === 'ok' || response?.status === 200) {
       setBackendStatus('up')
     } else {
       setBackendStatus('down')
-      setError(`Backend health check failed with status ${response.status}`)
+      setError(`Backend health check failed (${response?.status ?? 'unknown'})`)
     }
-    
+
     setLoading(false)
-    return response.data
+    return response
   }
   
   // Initial health check

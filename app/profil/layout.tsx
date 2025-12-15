@@ -117,40 +117,6 @@ function ProfileSidebarNav() {
   );
 }
 
-function ProfileMobileTabs() {
-  const pathname = usePathname();
-
-  return (
-    <nav className="md:hidden sticky top-0 z-10 -mx-4 mb-4 border-b border-[var(--color-border)] bg-[var(--color-bg-primary)]">
-      <div className="page-shell px-0">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide py-2 snap-x snap-mandatory">
-          {profileNavItems.map((item) => {
-            const isActive =
-              item.href === "/profil"
-                ? pathname === "/profil"
-                : pathname.startsWith(item.href);
-
-            return (
-              <Link
-                key={item.key}
-                href={item.href}
-                className={[
-                  "whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium border snap-start",
-                  "transition-all min-w-fit",
-                  isActive
-                    ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-sm"
-                    : "bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] border-[var(--color-border)]",
-                ].join(" ")}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 export default function ProfileLayout({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useAuth();
@@ -182,8 +148,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-8">
       <div className="page-shell">
-        <ProfileMobileTabs />
-        <div className="grid gap-8 md:grid-cols-[240px,minmax(0,1fr)]">
+        <div className="flex flex-col gap-8 md:grid md:grid-cols-[240px,minmax(0,1fr)]">
           <ProfileSidebarNav />
           <main className="flex flex-col gap-6">{children}</main>
         </div>

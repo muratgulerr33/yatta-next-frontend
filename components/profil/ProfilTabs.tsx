@@ -54,7 +54,7 @@ export function ProfilTabs({ isAuthenticated }: ProfilTabsProps) {
   ].filter((tab) => tab.show);
 
   return (
-    <nav className="sticky top-0 z-10 bg-[var(--color-bg-primary)] border-b border-slate-200 mb-6" aria-label="Profil sekmeleri">
+    <nav className="hidden md:block sticky top-0 z-10 bg-[var(--color-bg-primary)] border-b border-slate-200 mb-6" aria-label="Profil sekmeleri">
       <div className="flex overflow-x-auto scrollbar-hide -mb-px snap-x snap-mandatory">
         {tabs.map((tab, index) => {
           const isActive = tab.type === 'link' && tab.href ? pathname === tab.href : false;

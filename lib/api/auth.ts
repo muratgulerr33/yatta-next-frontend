@@ -97,15 +97,18 @@ export async function login(data: LoginData): Promise<AuthResponse> {
   }
 }
 
-export async function getMe(): Promise<AuthResponse> {
+export async function getMe(): Promise<AuthResponse | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/v1/accounts/me/`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       credentials: 'include', // Cookie'leri gönder
+      cache: 'no-store',
     });
+
+    if (response.status === 401) {
+      // Guest durumu: hata fırlatma, null dön
+      return null;
+    }
 
     const result = await response.json();
 

@@ -19,7 +19,9 @@ import { getMediaUrl } from "@/lib/media";
 import { getCountryName } from "@/lib/utils/country-mapping";
 import ListingGallery from "@/components/listing/ListingGallery";
 import ListingActionSidebar from "@/components/listing/ListingActionSidebar";
-import MobileStickyActionBar from "@/components/listing/MobileStickyActionBar";
+import ListingPriceFavorite from "@/components/listing/ListingPriceFavorite";
+import { ListingSellerCard } from "@/components/listing/ListingSellerCard";
+import BreadcrumbNavClient from "@/components/ui/BreadcrumbNavClient";
 
 // HTML <head> için meta/canonical/OG
 export async function generateMetadata({
@@ -80,32 +82,7 @@ export async function generateMetadata({
 
 // Component Definitions
 function BreadcrumbNav({ listing }: { listing: ListingDetail }) {
-  return (
-    <nav className="text-sm text-[color:var(--color-text-secondary)] mb-4">
-      <div className="flex items-center gap-2">
-        <Link
-          href="/"
-          className="hover:text-[color:var(--color-primary)] transition-colors"
-        >
-          Ana Sayfa
-        </Link>
-        <span>/</span>
-        <Link
-          href="/satilik-tekneler"
-          className="hover:text-[color:var(--color-primary)] transition-colors"
-        >
-          Satılık Tekneler
-        </Link>
-        <span>/</span>
-        <span
-          className="max-w-[180px] sm:max-w-xs line-clamp-1 sm:line-clamp-2 truncate text-[color:var(--color-text-primary)]"
-          title={listing.title}
-        >
-          {listing.title}
-        </span>
-      </div>
-    </nav>
-  );
+  return <BreadcrumbNavClient listing={listing} />;
 }
 
 
@@ -121,7 +98,7 @@ function ListingHeader({ listing }: { listing: ListingDetail }) {
     <div className="space-y-3">
       {/* Başlık */}
       <h1 
-        className="text-2xl sm:text-3xl font-bold text-[color:var(--color-text-primary)] line-clamp-1 sm:line-clamp-2"
+        className="text-2xl sm:text-3xl font-bold text-[color:var(--color-text-primary)]"
         title={listing.title}
       >
         {listing.title}
@@ -142,6 +119,9 @@ function ListingHeader({ listing }: { listing: ListingDetail }) {
           </div>
         )}
       </div>
+
+      {/* Bölge 1: Fiyat + Favori */}
+      <ListingPriceFavorite listing={listing} />
     </div>
   );
 }
@@ -351,47 +331,6 @@ function LocationSection({ listing }: { listing: ListingDetail }) {
 }
 
 
-function SellerProfileCard({ listing }: { listing: ListingDetail }) {
-  const sellerTypeLabels: Record<string, string> = {
-    owner: "Sahibinden",
-    realtor: "Emlakçıdan",
-    broker: "Broker",
-    other: "Diğer",
-  };
-
-  const sellerTypeLabel =
-    listing.seller_type && sellerTypeLabels[listing.seller_type]
-      ? sellerTypeLabels[listing.seller_type]
-      : listing.seller_type || "Satıcı";
-
-  return (
-    <div className="bg-[color:var(--color-bg-secondary)] border border-[color:var(--color-border)] rounded-xl p-6 space-y-4">
-      <div className="flex items-center gap-4">
-        {/* Avatar */}
-        <div className="w-12 h-12 rounded-full bg-[color:var(--color-bg-tertiary)] border border-[color:var(--color-border)] flex items-center justify-center text-lg">
-          {listing.owner.charAt(0).toUpperCase()}
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-[color:var(--color-text-primary)] truncate">
-              {listing.owner}
-            </h3>
-          </div>
-          <div className="text-xs text-[color:var(--color-text-secondary)]">
-            {sellerTypeLabel}
-          </div>
-        </div>
-      </div>
-
-      {listing.contact_phone && (
-        <div className="text-sm text-[color:var(--color-text-secondary)]">
-          <span className="font-medium">Telefon:</span> {listing.contact_phone}
-        </div>
-      )}
-    </div>
-  );
-}
 
 
 export default async function ListingDetailPage({
@@ -411,6 +350,28 @@ export default async function ListingDetailPage({
     if (!listing) {
       notFound();
     }
+
+  // Seller bilgilerini çıkar
+  const sellerName = listing.owner || "Satıcı";
+
+  const sellerTypeLabels: Record<string, string> = {
+    owner: "Sahibinden",
+    realtor: "Emlakçıdan",
+    broker: "Broker",
+    other: "Diğer",
+  };
+
+  const sellerSubtitle =
+    listing.seller_type && sellerTypeLabels[listing.seller_type]
+      ? sellerTypeLabels[listing.seller_type]
+      : listing.seller_type || "Üye";
+
+  const rawPhone = listing.contact_phone ?? null;
+
+  const phoneHref = rawPhone ? `tel:${rawPhone}` : undefined;
+
+  // Avatar URL şimdilik null (API'de profil fotoğrafı yok)
+  const avatarUrl = null;
 
   // Media'yı sırala: is_cover önce, sonra order'a göre
   const sortedMedia = [...listing.media].sort((a, b) => {
@@ -453,7 +414,7 @@ export default async function ListingDetailPage({
   };
 
   return (
-    <div className="min-h-screen bg-[color:var(--color-bg-primary)] pb-24 lg:pb-12">
+    <div className="min-h-screen bg-[color:var(--color-bg-primary)] pb-6 lg:pb-12">
       <div className="page-shell py-4 sm:pt-6">
         {isFromProfile && (
           <div className="mb-4">
@@ -474,6 +435,19 @@ export default async function ListingDetailPage({
             <ListingHeader listing={listing} />
             <QuickSpecsBar listing={listing} />
             <ListingDescription listing={listing} />
+
+            {/* Satıcı Kartı */}
+            <div className="my-6">
+              <ListingSellerCard
+                sellerName={sellerName}
+                sellerSubtitle={sellerSubtitle}
+                phoneNumber={rawPhone ?? undefined}
+                phoneHref={phoneHref}
+                ownerId={listing.owner_id}
+                avatarUrl={avatarUrl}
+              />
+            </div>
+
             <SpecsSection listing={listing} />
             <FeaturesSection listing={listing} />
             <LocationSection listing={listing} />
@@ -483,13 +457,9 @@ export default async function ListingDetailPage({
           <aside className="hidden lg:block">
             <div className="sticky top-24 space-y-6">
               <ListingActionSidebar listing={listing} />
-              <SellerProfileCard listing={listing} />
             </div>
           </aside>
         </main>
-
-        {/* Mobil Sticky Action Bar */}
-        <MobileStickyActionBar listing={listing} />
       </div>
 
       {/* JSON-LD Schema Markup */}

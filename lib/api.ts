@@ -27,7 +27,9 @@ export class ApiError extends Error {
 export async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
 
-  const res = await fetch(url, {
+  let res: Response;
+  try {
+    res = await fetch(url, {
     ...init,
     credentials: init.credentials ?? "include",
     headers: {
@@ -36,6 +38,10 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
     },
     cache: "no-store",
   });
+  } catch (err: any) {
+    // Ağ kesintilerini daha okunabilir bir hataya sar
+    throw new ApiError(err?.message || "Network request failed", 0, null);
+  }
 
   if (!res.ok) {
     let errorData: unknown = null;
@@ -133,6 +139,7 @@ export interface ListingDetail {
   status?: string;
   seller_type?: string;
   owner?: string;
+  owner_id?: number;
   contact_phone?: string | null;
   media: ListingMedia[];
   is_favorite?: boolean;
@@ -161,10 +168,9 @@ export interface PaginatedResponse<T> {
 /* -------------------------------------------------------
    Fetch Sale Listings
 ------------------------------------------------------- */
-export async function fetchSaleListings(): Promise<ListingSummary[]> {
-  const data = await request<PaginatedResponse<any>>(
-    `/api/v1/listings/?category_key=satilik-tekneler`
-  );
+export async function fetchSaleListings(queryString?: string): Promise<ListingSummary[]> {
+  const url = `/api/v1/listings/?category_key=satilik-tekneler${queryString ? `&${queryString}` : ''}`;
+  const data = await request<PaginatedResponse<any>>(url);
 
   return data.results.map((item) => {
     // cover_image_url için media array'inden is_cover olanı veya ilkini bul
@@ -245,7 +251,7 @@ export async function fetchListings(params?: {
 }): Promise<PaginatedResponse<ListingSummary>> {
   const queryParams = new URLSearchParams();
   if (params?.category_key) {
-    queryParams.append("category", params.category_key);
+    queryParams.append("category_key", params.category_key);
   }
   if (params?.page) {
     queryParams.append("page", params.page.toString());
@@ -309,8 +315,13 @@ export async function updateMe(payload: {
 export const api = {
   health: {
     ping: async (): Promise<{ status: string }> => {
+      try {
       const res = await request<{ status: string }>("/health/ping");
-      return res;
+        return { status: res?.status ?? "ok" };
+      } catch (err) {
+        console.warn("health ping failed", err);
+        return { status: "down" };
+      }
     },
   },
 };
@@ -319,3 +330,4 @@ export const api = {
    Re-exports
 ------------------------------------------------------- */
 export * from "./api/favorites";
+export * from "./api/chat";

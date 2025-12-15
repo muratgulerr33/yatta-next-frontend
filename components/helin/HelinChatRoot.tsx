@@ -4,7 +4,11 @@ import { useHelinChatContext } from '@/contexts/HelinChatContext';
 import { HelinChatTrigger } from './HelinChatTrigger';
 import { HelinChatWindow } from './HelinChatWindow';
 
-export function HelinChatRoot() {
+interface HelinChatRootProps {
+  hideOnMobile?: boolean;
+}
+
+export function HelinChatRoot({ hideOnMobile = false }: HelinChatRootProps) {
   const { 
     isOpen, 
     toggleChat, 
@@ -27,6 +31,7 @@ export function HelinChatRoot() {
         onClick={toggleChat} 
         isOpen={isOpen} 
         hasUnread={hasUnread}
+        hideOnMobile={hideOnMobile}
       />
     </>
   );

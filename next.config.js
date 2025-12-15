@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Cross-origin request için local network IP'lerine izin ver
+  allowedDevOrigins: [
+    '127.0.0.1',
+    'localhost',
+    '192.168.1.26', // Senin local IP'n
+  ],
   // Use standalone output to produce .next/standalone for production
   // Local build için NEXT_CONFIG_OUTPUT=standard ile devre dışı bırakılabilir
   ...(process.env.NEXT_CONFIG_OUTPUT !== 'standard' && { output: 'standalone' }),

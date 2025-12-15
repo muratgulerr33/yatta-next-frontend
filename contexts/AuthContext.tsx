@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshUser = useCallback(async () => {
     try {
       const result = await getMe();
-      if (result.success && result.user) {
+      if (result && result.success && result.user) {
         // User interface'ine uygun hale getir
         setUser({
           ...result.user,

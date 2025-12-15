@@ -181,7 +181,7 @@ export default function SatilikTeknelerClient({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {listings.map((listing) => {
+      {listings.map((listing, index) => {
         const favoriteId = favoritesMap.get(listing.id) ?? null;
         const cardProps = mapListingToCardProps(listing, favoriteId);
         return (
@@ -189,6 +189,7 @@ export default function SatilikTeknelerClient({
             key={listing.id}
             data={{
               ...cardProps,
+              position: index,
               onFavoriteChange: handleFavoriteChange,
             }}
           />

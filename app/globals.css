@@ -221,6 +221,7 @@
   max-width: 896px;
   margin-left: auto;
   margin-right: auto;
+  overflow-x: hidden;   /* kritik */
 }
 
 /* Neon glow efekti */
@@ -402,4 +403,13 @@
 }
 
 /* Header logo yüksekliği - Tailwind utility'lerle kontrol edilir (SiteHeader.tsx) */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { addFavorite, removeFavorite, getFavorites } from '@/lib/api/favorites';
+import { useListingMessageAction } from '@/hooks/useListingMessageAction';
 import { Heart } from 'lucide-react';
 import type { ListingDetail } from '@/lib/api';
 
@@ -17,6 +18,7 @@ export default function MobileStickyActionBar({ listing }: MobileStickyActionBar
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { handleMessageClick } = useListingMessageAction(listing.owner_id);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -60,6 +62,7 @@ export default function MobileStickyActionBar({ listing }: MobileStickyActionBar
       setIsLoading(false);
     }
   };
+
 
   const formatPrice = (price: number | string | null, currency: string | null) => {
     if (!price || !currency) return "Fiyat bilgisi yok";
@@ -105,14 +108,17 @@ export default function MobileStickyActionBar({ listing }: MobileStickyActionBar
 
           {/* Sağ: Primary CTA */}
           {listing.contact_phone ? (
-            <a
-              href={`tel:${listing.contact_phone}`}
+            <button
+              onClick={handleMessageClick}
               className="bg-[color:var(--color-primary)] text-[color:var(--color-text-inverse)] rounded-lg px-4 py-2 font-semibold text-sm whitespace-nowrap hover:bg-[color:var(--color-primary-hover)] transition-colors"
             >
               Ara / Mesaj
-            </a>
+            </button>
           ) : (
-            <button className="bg-[color:var(--color-primary)] text-[color:var(--color-text-inverse)] rounded-lg px-4 py-2 font-semibold text-sm whitespace-nowrap hover:bg-[color:var(--color-primary-hover)] transition-colors">
+            <button 
+              onClick={handleMessageClick}
+              className="bg-[color:var(--color-primary)] text-[color:var(--color-text-inverse)] rounded-lg px-4 py-2 font-semibold text-sm whitespace-nowrap hover:bg-[color:var(--color-primary-hover)] transition-colors"
+            >
               Mesaj Gönder
             </button>
           )}

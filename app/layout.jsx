@@ -13,14 +13,14 @@ const inter = Inter({
 
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { SiteFooter } from '@/components/layout/SiteFooter'
-import { HelinChatRoot } from '@/components/helin/HelinChatRoot'
+import MobileNavWrapper from '@/components/layout/MobileNavWrapper'
 
 // Font Awesome CSS - tüm ikonlar için
 import '@fortawesome/fontawesome-free/css/all.css'
 
 // React Icons otomatik olarak çalışır, import gerekmez (kullanıldığı yerde import edilir)
 
-const BASE_URL = 'https://yatta.com.tr'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://127.0.0.1:3000'
 
 export const metadata = {
   metadataBase: new URL(BASE_URL),
@@ -87,16 +87,18 @@ export const revalidate = 3600 // 1 saat ISR (Incremental Static Regeneration)
 export default function RootLayout({ children }) {
   return (
     <html lang="tr" data-theme="light" className={inter.variable}>
-      <body className="font-sans antialiased bg-light text-primary min-h-screen flex flex-col">
+      <body className="font-sans antialiased bg-light text-primary min-h-screen flex flex-col overflow-x-hidden">
         <AppStateProvider>
           <AuthProvider>
             <HelinChatProvider>
               <SiteHeader />
-              <main className="flex-1 px-[11px]">
+              <main className="flex-1 px-[11px] pb-[100px] md:pb-24">
                 {children}
               </main>
-              <SiteFooter />
-              <HelinChatRoot />
+              <div className="pb-[calc(env(safe-area-inset-bottom)+6rem)] md:pb-0">
+                <SiteFooter />
+              </div>
+              <MobileNavWrapper />
             </HelinChatProvider>
           </AuthProvider>
         </AppStateProvider>

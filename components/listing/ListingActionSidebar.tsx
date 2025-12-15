@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { addFavorite, removeFavorite, getFavorites } from '@/lib/api/favorites';
+import { useListingMessageAction } from '@/hooks/useListingMessageAction';
 import { Heart } from 'lucide-react';
 import type { ListingDetail } from '@/lib/api';
 
@@ -17,6 +18,7 @@ export default function ListingActionSidebar({ listing }: ListingActionSidebarPr
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteId, setFavoriteId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { handleMessageClick } = useListingMessageAction(listing.owner_id);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -63,6 +65,7 @@ export default function ListingActionSidebar({ listing }: ListingActionSidebarPr
     }
   };
 
+
   const formatPrice = (price: number | string | null, currency: string | null) => {
     if (!price || !currency) return "Fiyat bilgisi yok";
     const numPrice = typeof price === "string" ? parseFloat(price) : price;
@@ -100,7 +103,10 @@ export default function ListingActionSidebar({ listing }: ListingActionSidebarPr
           )}
 
           {/* Secondary CTA */}
-          <button className="w-full border border-[color:var(--color-border)] text-[color:var(--color-text-primary)] rounded-lg px-4 py-3 font-semibold hover:bg-[color:var(--color-bg-secondary)] transition-colors">
+          <button 
+            onClick={handleMessageClick}
+            className="w-full border border-[color:var(--color-border)] text-[color:var(--color-text-primary)] rounded-lg px-4 py-3 font-semibold hover:bg-[color:var(--color-bg-secondary)] transition-colors"
+          >
             Mesaj Gönder
           </button>
 
