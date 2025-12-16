@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Dialog, Popover } from '@headlessui/react';
 import {
@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { TR_CITIES } from '@/data/locations/tr-cities';
 import clsx from 'clsx';
+import { PriceRangeControl } from './PriceRangeControl';
 
 interface FilterState {
   search: string;
@@ -43,6 +44,7 @@ const ALLOWED_PARAMS = [
   'year_max',
 ];
 
+
 export default function FilterBarV1() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -56,8 +58,11 @@ export default function FilterBarV1() {
   const [lengthMinLocal, setLengthMinLocal] = useState('');
   const [lengthMaxLocal, setLengthMaxLocal] = useState('');
 
-  // Parse filters from URL
-  const parseFilters = useCallback((): FilterState => {
+  // Stable key from searchParams (string, not object)
+  const spKey = searchParams.toString();
+
+  // Parse filters from URL - stable memoized version
+  const filters = useMemo(() => {
     return {
       search: searchParams.get('search') || '',
       location_province: searchParams.get('location_province') || '',
@@ -69,9 +74,7 @@ export default function FilterBarV1() {
       year_min: searchParams.get('year_min') || '',
       year_max: searchParams.get('year_max') || '',
     };
-  }, [searchParams]);
-
-  const filters = parseFilters();
+  }, [spKey]);
 
   // Initialize search input from URL
   useEffect(() => {
@@ -89,20 +92,21 @@ export default function FilterBarV1() {
   // Build search params string
   const buildSearchParams = useCallback(
     (patch: Partial<FilterState>, removeEmpty = true): string => {
-      const current = parseFilters();
+      const current = filters;
       const merged = { ...current, ...patch };
 
       const params = new URLSearchParams();
       ALLOWED_PARAMS.forEach((key) => {
         const value = merged[key as keyof FilterState];
-        if (value && (!removeEmpty || value.trim() !== '')) {
+        const shouldAppend = value && (!removeEmpty || value.trim() !== '');
+        if (shouldAppend) {
           params.append(key, value);
         }
       });
 
       return params.toString();
     },
-    [parseFilters]
+    [filters]
   );
 
   // Apply patch to URL
@@ -175,11 +179,35 @@ export default function FilterBarV1() {
 
   // Dialog state (draft)
   const [draftFilters, setDraftFilters] = useState<FilterState>(filters);
+  
+  // Guard: Track if dialog was just opened to prevent infinite loops
+  const lastDialogOpenRef = useRef(false);
+  const lastFiltersRef = useRef<FilterState>(filters);
 
+  // Dialog açılınca URL'deki "applied" filtrelerden draft'ı initialize et
   useEffect(() => {
-    if (isDialogOpen) {
-      setDraftFilters(filters);
+    // Only initialize when dialog transitions from closed to open
+    if (!isDialogOpen) {
+      lastDialogOpenRef.current = false;
+      return;
     }
+    
+    // If dialog was already open, don't re-initialize unless filters actually changed
+    if (lastDialogOpenRef.current) {
+      // Deep comparison: check if filters actually changed
+      const filtersChanged = Object.keys(filters).some(
+        (key) => filters[key as keyof FilterState] !== lastFiltersRef.current[key as keyof FilterState]
+      );
+      
+      if (!filtersChanged) {
+        return;
+      }
+    }
+    
+    // Initialize draft from current filters
+    lastDialogOpenRef.current = true;
+    lastFiltersRef.current = filters;
+    setDraftFilters(filters);
   }, [isDialogOpen, filters]);
 
   const handleDialogApply = () => {
@@ -612,47 +640,18 @@ export default function FilterBarV1() {
               </div>
 
               {/* Fiyat */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Fiyat Aralığı (TL)
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">
-                      Min
-                    </label>
-                    <input
-                      type="number"
-                      value={draftFilters.price_min}
-                      onChange={(e) =>
-                        setDraftFilters({
-                          ...draftFilters,
-                          price_min: e.target.value,
-                        })
-                      }
-                      placeholder="0"
-                      className="w-full px-3 py-2.5 h-11 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-focus-ring)]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">
-                      Max
-                    </label>
-                    <input
-                      type="number"
-                      value={draftFilters.price_max}
-                      onChange={(e) =>
-                        setDraftFilters({
-                          ...draftFilters,
-                          price_max: e.target.value,
-                        })
-                      }
-                      placeholder="∞"
-                      className="w-full px-3 py-2.5 h-11 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-focus-ring)]"
-                    />
-                  </div>
-                </div>
-              </div>
+              <PriceRangeControl
+                minValue={draftFilters.price_min}
+                maxValue={draftFilters.price_max}
+                onChange={(min, max) => {
+                  setDraftFilters({
+                    ...draftFilters,
+                    price_min: min,
+                    price_max: max,
+                  });
+                }}
+                label="Fiyat Aralığı (TL)"
+              />
 
               {/* Uzunluk */}
               <div>

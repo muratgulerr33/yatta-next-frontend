@@ -18,7 +18,6 @@ export function Step1IdentityLocation({ values, onChange, onNext }: Props) {
   const handleBrandModelChange = (value: string) => {
     onChange({
       brand_name: value,
-      model_name: value,
     });
   };
 

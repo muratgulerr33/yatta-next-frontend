@@ -225,10 +225,6 @@ function SpecsSection({ listing }: { listing: ListingDetail }) {
     specs.push({ label: "Marka", value: listing.brand_name });
   }
 
-  if (listing.model_name) {
-    specs.push({ label: "Model", value: listing.model_name });
-  }
-
   if (listing.engine_count) {
     specs.push({
       label: "Motor Sayısı",

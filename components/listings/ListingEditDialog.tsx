@@ -37,7 +37,6 @@ export function ListingEditDialog({ listing, onUpdated, onClose }: Props) {
     setFormValues(prev => ({
       ...prev,
       brand_name: value,
-      model_name: value,
     }));
   };
 

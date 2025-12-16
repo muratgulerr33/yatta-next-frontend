@@ -56,7 +56,6 @@ const STEPS: StepMeta[] = [
 const DEFAULT_VALUES: ListingFormValues = {
   boat_type: "",
   brand_name: "",
-  model_name: "",
   year_built: null,
   location_province: "",
   location_district: "",

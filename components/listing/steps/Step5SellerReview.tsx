@@ -114,9 +114,7 @@ export function Step5SellerReview({ values, onChange, onBack, onSubmit, isSubmit
             <div>
               <span className="font-medium text-gray-700">Tekne:</span>{" "}
               <span className="text-gray-600">
-                {values.brand_name && values.model_name
-                  ? `${values.brand_name} ${values.model_name}`
-                  : "Belirtilmemiş"}
+                {values.brand_name || "Belirtilmemiş"}
               </span>
             </div>
             <div>

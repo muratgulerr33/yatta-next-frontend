@@ -26,7 +26,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       inline-flex items-center justify-center
       font-semibold
       rounded-lg
-      transition-colors
+      transition-colors duration-200
       focus:outline-none focus:ring-2 focus:ring-offset-2
       disabled:opacity-50 disabled:cursor-not-allowed
       h-12
@@ -36,22 +36,22 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantStyles = {
       primary: `
-        bg-[#004aad] text-white
-        hover:bg-[#003380]
-        focus:ring-[#004aad]
-        active:bg-[#002b5b]
+        bg-[color:var(--color-primary)] text-[color:var(--color-text-inverse)]
+        hover:bg-[color:var(--color-primary-hover)]
+        focus:ring-[color:var(--color-focus-ring)]
+        active:bg-[color:var(--color-primary-active)]
       `,
       secondary: `
-        bg-slate-100 text-slate-900
-        hover:bg-slate-200
-        focus:ring-slate-300
-        active:bg-slate-300
+        bg-[color:var(--color-bg-secondary)] text-[color:var(--color-text-primary)]
+        hover:bg-[color:var(--color-bg-tertiary)]
+        focus:ring-[color:var(--color-focus-ring)]
+        active:bg-[color:var(--color-bg-tertiary)]
       `,
       outline: `
-        border-2 border-slate-300 text-slate-700 bg-white
-        hover:bg-slate-50 hover:border-slate-400
-        focus:ring-slate-300
-        active:bg-slate-100
+        border-2 border-[color:var(--color-border)] text-[color:var(--color-text-primary)] bg-[color:var(--color-bg-primary)]
+        hover:bg-[color:var(--color-bg-secondary)] hover:border-[color:var(--color-border-focus)]
+        focus:ring-[color:var(--color-focus-ring)]
+        active:bg-[color:var(--color-bg-secondary)]
       `,
       destructive: `
         bg-red-600 text-white

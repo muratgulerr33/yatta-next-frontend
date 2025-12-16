@@ -129,7 +129,6 @@ export interface ListingDetail {
   cabins?: number | null;
   capacity_people?: number | null;
   brand_name?: string | null;
-  model_name?: string | null;
   engine_count?: number | null;
   fuel_type?: string | null;
   engine_info_note?: string | null;
@@ -169,7 +168,34 @@ export interface PaginatedResponse<T> {
    Fetch Sale Listings
 ------------------------------------------------------- */
 export async function fetchSaleListings(queryString?: string): Promise<ListingSummary[]> {
-  const url = `/api/v1/listings/?category_key=satilik-tekneler${queryString ? `&${queryString}` : ''}`;
+  const backendParams = new URLSearchParams();
+
+  if (queryString) {
+    const params = new URLSearchParams(queryString);
+
+    // passthrough
+    if (params.get("location_province")) backendParams.set("location_province", params.get("location_province")!);
+    if (params.get("boat_type")) backendParams.set("boat_type", params.get("boat_type")!);
+
+    // price_min/max -> min_price/max_price
+    if (params.get("price_min")) backendParams.set("min_price", params.get("price_min")!);
+    if (params.get("price_max")) backendParams.set("max_price", params.get("price_max")!);
+
+    // year_min/max -> year_built_min/max
+    if (params.get("year_min")) backendParams.set("year_built_min", params.get("year_min")!);
+    if (params.get("year_max")) backendParams.set("year_built_max", params.get("year_max")!);
+
+    // length (backend'de destekleyeceğiz)
+    if (params.get("length_min")) backendParams.set("length_min", params.get("length_min")!);
+    if (params.get("length_max")) backendParams.set("length_max", params.get("length_max")!);
+
+    // search (backend'de destekleyeceğiz)
+    if (params.get("search")) backendParams.set("search", params.get("search")!);
+  }
+
+  const mapped = backendParams.toString();
+  const url = `/api/v1/listings/?category_key=satilik-tekneler${mapped ? `&${mapped}` : ""}`;
+  
   const data = await request<PaginatedResponse<any>>(url);
 
   return data.results.map((item) => {

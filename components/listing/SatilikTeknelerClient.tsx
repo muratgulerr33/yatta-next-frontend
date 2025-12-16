@@ -34,8 +34,8 @@ function mapListingToCardProps(
     // Fallback: cover_image_url kullan
     images = [getMediaUrl(listing.cover_image_url)];
   } else {
-    // Son fallback: placeholder
-    images = ["/placeholder-boat.jpg"];
+    // Son fallback: var olan bir görsel kullan (placeholder yoksa)
+    images = ["/yatta-icon.webp"];
   }
 
   const location = [listing.city_display, listing.district_display]

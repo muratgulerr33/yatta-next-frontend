@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/satilik-tekneler" },
 };
 
+// Force dynamic rendering to ensure searchParams changes trigger re-render
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const ALLOWED_FILTER_PARAMS = [
   'search',
   'location_province',
@@ -23,11 +27,14 @@ const ALLOWED_FILTER_PARAMS = [
 export default async function SatilikTeknelerPage({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  // Next.js 15: searchParams is now a Promise
+  const resolvedSearchParams = await (searchParams ?? Promise.resolve({}));
+  
   // Build query string from allowed searchParams
-  const queryString = searchParams
-    ? Object.entries(searchParams)
+  const queryString = resolvedSearchParams && Object.keys(resolvedSearchParams).length > 0
+    ? Object.entries(resolvedSearchParams)
         .filter(([key]) => ALLOWED_FILTER_PARAMS.includes(key))
         .map(([key, value]) => ({
           key,

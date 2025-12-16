@@ -5,6 +5,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import { LogOut } from 'lucide-react'
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
+import { LanguageDrawer } from '@/components/ui/LanguageDrawer'
 
 const mainNavLinks = [
   { href: '/kiralama', label: 'Kiralama' },
@@ -91,61 +94,68 @@ export function SiteHeader() {
           isHiddenOnScroll ? '-translate-y-full' : 'translate-y-0'
         }`}
       >
-        <nav
-          className="page-shell flex items-center justify-between h-[56px] lg:h-[64px] pl-4 pr-4 sm:pl-6 sm:pr-6 lg:pl-8 lg:pr-8"
-          aria-label="Ana navigasyon"
-        >
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 z-50" aria-label="Ana sayfaya git" onClick={closeMobileMenu}>
-            <Image
-              src="/yatta-header-primary.svg"
-              alt="YATTA"
-              width={112}
-              height={28}
-              priority
-              className="h-8 w-auto lg:h-10 block"
-            />
-          </Link>
-
-          {/* Desktop Navigasyon */}
-          <div className="hidden lg:flex items-center gap-8 text-[15px] font-medium">
-            {mainNavLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-slate-600 hover:text-[#004aad] transition-colors relative group py-2"
-              >
-                {link.label}
-                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-[#004aad] scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <nav
+            className="flex items-center h-[56px] lg:h-[64px]"
+            aria-label="Ana navigasyon"
+          >
+            {/* SOL: Logo + Desktop nav */}
+            <div className="flex items-center gap-6 min-w-0">
+              {/* Logo */}
+              <Link href="/" className="flex items-center gap-2 z-50 shrink-0" aria-label="Ana sayfaya git" onClick={closeMobileMenu}>
+                <Image
+                  src="/yatta-header-primary.svg"
+                  alt="YATTA"
+                  width={112}
+                  height={28}
+                  priority
+                  className="h-8 w-auto lg:h-10 block"
+                />
               </Link>
-            ))}
-          </div>
 
-          {/* Sağ Blok - Aksiyon İkonları */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* Arama Butonu */}
-            <button
-              type="button"
-              className={iconTriggerClass}
-              aria-label="Site içinde ara"
-            >
-              <Image
-                src="/icons/icon-search.svg"
-                alt=""
-                width={24}
-                height={24}
-                className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
-                aria-hidden="true"
-              />
-            </button>
+              {/* Desktop Navigasyon */}
+              <nav className="hidden lg:flex items-center gap-6 text-[15px] font-medium">
+                {mainNavLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-slate-600 hover:text-[#004aad] transition-colors relative group py-2"
+                  >
+                    {link.label}
+                    <span className="absolute inset-x-0 bottom-0 h-0.5 bg-[#004aad] scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-            {/* Profil Butonu */}
+            {/* SAĞ: Desktop aksiyon grubu (1024+ görünür) */}
             {isAuthenticated ? (
-              <>
-                {/* Mobil: Sadece profil butonu */}
+              <div className="ml-auto hidden lg:flex items-center gap-3 shrink-0">
+                {/* Language Switcher must be the LEFTMOST item in this action group */}
+                <div className="hidden lg:block pr-3 mr-1 border-r border-[color:var(--color-border)]">
+                  <LanguageSwitcher />
+                </div>
+
+                {/* Arama Butonu */}
+                <button
+                  type="button"
+                  className={iconTriggerClass}
+                  aria-label="Site içinde ara"
+                >
+                  <Image
+                    src="/icons/icon-search.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {/* Profil Butonu */}
                 <Link
                   href="/profil"
-                  className={`lg:hidden ${iconTriggerClass}`}
+                  className={iconTriggerClass}
                   aria-label="Profil sayfasına git"
                 >
                   <Image
@@ -157,66 +167,146 @@ export function SiteHeader() {
                     aria-hidden="true"
                   />
                 </Link>
-                {/* Desktop: Profil butonu + Çıkış Yap butonu */}
-                <div className="hidden lg:flex items-center gap-3">
-                  <Link
-                    href="/profil"
-                    className={iconTriggerClass}
-                    aria-label="Profil sayfasına git"
-                  >
-                    <Image
-                      src="/icons/icon-user.svg"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={logout}
-                    className="inline-flex items-center rounded-full border border-red-200 px-3 py-1 text-xs font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition"
-                  >
-                    Çıkış Yap
-                  </button>
-                </div>
-              </>
+
+                {/* Çıkış Yap Butonu */}
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="
+                    flex items-center gap-x-2 
+                    px-4 py-2 
+                    text-sm font-medium text-gray-600 
+                    bg-transparent 
+                    rounded-lg 
+                    transition-all duration-200 
+                    hover:bg-red-50 hover:text-red-600 
+                    focus:outline-none focus:ring-2 focus:ring-red-100 focus:ring-offset-1
+                    active:scale-95
+                    whitespace-nowrap
+                  "
+                  aria-label="Oturumu Kapat"
+                >
+                  <LogOut 
+                    className="w-4 h-4 opacity-80" 
+                    aria-hidden="true"
+                  />
+                  <span>Çıkış Yap</span>
+                </button>
+              </div>
             ) : (
-              <Link
-                href="/login"
+              <div className="ml-auto hidden lg:flex items-center gap-3 shrink-0">
+                {/* Language Switcher must be the LEFTMOST item in this action group */}
+                <div className="hidden lg:block pr-3 mr-1 border-r border-[color:var(--color-border)]">
+                  <LanguageSwitcher />
+                </div>
+
+                {/* Arama Butonu */}
+                <button
+                  type="button"
+                  className={iconTriggerClass}
+                  aria-label="Site içinde ara"
+                >
+                  <Image
+                    src="/icons/icon-search.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {/* Giriş Butonu */}
+                <Link
+                  href="/login"
+                  className={iconTriggerClass}
+                  aria-label="Giriş yap"
+                >
+                  <Image
+                    src="/icons/icon-user.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </div>
+            )}
+
+            {/* SAĞ: Mobil aksiyonlar (1024 altı görünür) */}
+            <div className="ml-auto flex items-center gap-2 sm:gap-4 lg:hidden">
+              {/* Arama Butonu */}
+              <button
+                type="button"
                 className={iconTriggerClass}
-                aria-label="Giriş yap"
+                aria-label="Site içinde ara"
               >
                 <Image
-                  src="/icons/icon-user.svg"
+                  src="/icons/icon-search.svg"
                   alt=""
                   width={24}
                   height={24}
                   className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
                   aria-hidden="true"
                 />
-              </Link>
-            )}
+              </button>
 
-            {/* Hamburger Menü Butonu */}
-            <button
-              type="button"
-              className={`lg:hidden ${iconTriggerClass} ml-1`}
-              aria-label="Ana menüyü aç"
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Image
-                src="/icons/icon-menu.svg"
-                alt=""
-                width={28}
-                height={28}
-                className="w-7 h-7 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
-                aria-hidden="true"
-              />
-            </button>
-          </div>
-        </nav>
+              {/* Profil Butonu (sadece authenticated ise) */}
+              {isAuthenticated && (
+                <Link
+                  href="/profil"
+                  className={iconTriggerClass}
+                  aria-label="Profil sayfasına git"
+                >
+                  <Image
+                    src="/icons/icon-user.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
+                    aria-hidden="true"
+                  />
+                </Link>
+              )}
+
+              {/* Giriş Butonu (sadece unauthenticated ise) */}
+              {!isAuthenticated && (
+                <Link
+                  href="/login"
+                  className={iconTriggerClass}
+                  aria-label="Giriş yap"
+                >
+                  <Image
+                    src="/icons/icon-user.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
+                    aria-hidden="true"
+                  />
+                </Link>
+              )}
+
+              {/* Hamburger Menü Butonu */}
+              <button
+                type="button"
+                className={`${iconTriggerClass} ml-1`}
+                aria-label="Ana menüyü aç"
+                onClick={() => setIsMobileMenuOpen(true)}
+              >
+                <Image
+                  src="/icons/icon-menu.svg"
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="w-7 h-7 block text-slate-900 drop-shadow-sm hover:scale-105 transition-transform"
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+          </nav>
+        </div>
       </header>
 
       {/* Modern Mobile Menu Overlay (2025 Style) */}
@@ -301,7 +391,7 @@ export function SiteHeader() {
             </nav>
 
             {/* Footer Actions */}
-            <div className="space-y-6 mt-8 border-t border-slate-100 pt-8">
+            <div className="space-y-6 mt-auto border-t border-slate-100 pt-8">
               <div>
                 <h2 className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4 pl-1">
                   Hesabım
@@ -351,6 +441,11 @@ export function SiteHeader() {
               {/* Social / Contact Hint */}
               <div className="flex items-center justify-center gap-6 pt-4 opacity-50">
                  <span className="text-xs font-medium text-slate-400">© 2025 Yatta</span>
+              </div>
+
+              {/* Footer zone (bottom of sidebar) */}
+              <div className="mt-auto pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+                <LanguageDrawer />
               </div>
             </div>
           </div>

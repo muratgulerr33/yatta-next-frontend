@@ -4,7 +4,6 @@ export type ListingFormValues = {
   // Adım 1 – Kimlik & Konum
   boat_type: string;
   brand_name: string;
-  model_name: string;
   year_built: number | null;
   location_province: string;
   location_district: string;
@@ -43,7 +42,6 @@ export function mapListingToFormValues(listing: Listing): ListingFormValues {
   return {
     boat_type: listing.boat_type || "",
     brand_name: listing.brand_name || "",
-    model_name: listing.model_name || "",
     year_built: listing.year_built ?? null,
     location_province: listing.location_province || "",
     location_district: listing.location_district || "",
@@ -82,7 +80,6 @@ export function mapFormValuesToUpdatePayload(
     boat_type: values.boat_type,
     year_built: values.year_built ? Number(values.year_built) : undefined,
     brand_name: values.brand_name,
-    model_name: values.model_name,
     length_m: values.length_m ? Number(values.length_m) : undefined,
     beam_m: values.beam_m ? Number(values.beam_m) : undefined,
     capacity_people: values.capacity_people ? Number(values.capacity_people) : undefined,

@@ -17,7 +17,6 @@ export interface Listing {
   boat_type: string;
   year_built: number | null;
   brand_name: string;
-  model_name: string;
   length_m: number | null;
   beam_m?: number | null;
   capacity_people: number | null;
@@ -56,7 +55,6 @@ export interface ListingCreatePayload {
   boat_type: string;
   year_built: number;
   brand_name: string;
-  model_name: string;
   length_m: number;
   beam_m?: number;
   capacity_people: number;

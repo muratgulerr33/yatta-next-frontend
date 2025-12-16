@@ -48,7 +48,11 @@ export default function SaleBoatCard({ data }: { data: SaleBoatCardProps }) {
 
   const coverImage = data.images?.[0];
   const extraImageCount = Math.max(0, (data.images?.length || 0) - 1);
-  const isLcpImage = (data.position ?? 0) === 0;
+  // Dev'de hydration riskini sıfırla, prod build'de LCP için çalışsın:
+  const position = typeof data.position === "number" ? data.position : -1;
+  const isLcpImage = process.env.NODE_ENV === "production" && position === 0;
+  // Güvenli fallback: coverImage yoksa var olan bir görsel kullan
+  const coverImageSrc = coverImage && coverImage.length > 0 ? coverImage : "/yatta-icon.webp";
 
   // Parent'tan gelen prop değişikliklerini dinle ve local state'i senkronize et
   useEffect(() => {
@@ -164,23 +168,18 @@ export default function SaleBoatCard({ data }: { data: SaleBoatCardProps }) {
     >
       {/* Görsel Alanı */}
       <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-        {coverImage && (
-          <>
-            <Image
-              src={coverImage}
-              alt={data.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              priority={isLcpImage}
-              fetchPriority={isLcpImage ? "high" : "auto"}
-            />
-            {extraImageCount > 0 && (
-              <span className="absolute right-3 top-3 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white">
-                +{extraImageCount} foto
-              </span>
-            )}
-          </>
+        <Image
+          src={coverImageSrc}
+          alt={data.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          priority={isLcpImage}
+        />
+        {extraImageCount > 0 && (
+          <span className="absolute right-3 top-3 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white">
+            +{extraImageCount} foto
+          </span>
         )}
 
         {/* Favori Butonu */}
